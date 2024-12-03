@@ -1,0 +1,33 @@
+@use "./../../helper/mixins" as m;
+@use "./../../helper/variables" as v;
+
+@use "./hero/hero" as hero;
+@use "./partner/partner" as partners;
+@use "./team/tim" as tim;
+@use "./information/information" as information;
+@use "./faq/faq" as faq;
+
+.home {
+  padding: v.$padding-vertical-main 0;
+
+  .hero {
+    padding: 0 v.$padding-horizontal-main;
+    @include hero.hero();
+  }
+  .partner {
+    padding: v.$padding-horizontal-main 0 0 0;
+    @include partners.partners();
+  }
+  .tim {
+    padding: v.$padding-vertical-main v.$padding-horizontal-main;
+    @include tim.tim();
+  }
+  .information {
+    padding: v.$padding-vertical-main v.$padding-horizontal-main;
+    @include information.information();
+  }
+  .faq {
+    padding: v.$padding-vertical-main v.$padding-horizontal-main;
+    @include faq.faq();
+  }
+}

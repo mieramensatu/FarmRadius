@@ -1,0 +1,63 @@
+@use "./../../../helper/mixins" as m;
+@use "./../../../helper/variables" as v;
+
+@mixin benefit() {
+  .advantages-section {
+    text-align: center;
+    padding: 2rem;
+    margin: 2rem auto;
+    position: relative;
+
+    &::before{
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -10%;
+      width: 200%;
+      height: 100%;
+      background-color: map-get($map: v.$color, $key: "dark-cream" );
+      z-index: -1;
+    }
+
+    h2 {
+      font-size: 2rem;
+      color: #333;
+      margin-bottom: 2rem;
+    }
+
+    .advantages-container {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+
+      .advantage {
+        flex: 1;
+        padding: 1.5rem;
+        text-align: center;
+
+        h3 {
+          font-size: 1.5rem;
+          color: #333;
+          margin-bottom: 1rem;
+        }
+
+        p {
+          font-size: 1rem;
+          color: #666;
+          line-height: 1.5;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .advantages-container {
+      flex-direction: column;
+      align-items: center;
+
+      .advantage {
+        max-width: 90%;
+      }
+    }
+  }
+}

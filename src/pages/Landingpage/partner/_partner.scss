@@ -1,0 +1,45 @@
+@use "./../../../helper/mixins" as m;
+@use "./../../../helper/variables" as v;
+
+@mixin partners() {
+  .scrolling-logos {
+    width: 100%;
+    overflow: hidden;
+    background-color: map-get($map: v.$color, $key: "light-color");
+    padding: 1vh;
+
+    .logo-container {
+      display: flex;
+      white-space: nowrap;
+
+      .logo-slide {
+        display: flex;
+        animation: scroll 30s linear infinite;
+        flex-shrink: 0;
+        width: max-content; 
+
+        img {
+          width: 10vw;
+          height: 8vw;
+          object-fit: contain;
+          margin-left: 3.2vw;
+          filter: grayscale(1);
+          transition: filter 0.3s ease;
+
+          &:hover {
+            filter: grayscale(0);
+          }
+        }
+      }
+    }
+  }
+
+  @keyframes scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+}

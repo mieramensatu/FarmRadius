@@ -1,0 +1,24 @@
+@use "./helper/mixins" as m;
+@use "./helper/variables" as v;
+
+@use "./component/Navbar/navbar";
+@use "./pages/Login/login";
+@use "./pages/Register/register";
+@use "./component/Footer/footer";
+
+@use "./pages/landingpage/landingpage";
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  overflow-y: auto;
+  overflow-x: hidden;
+  font-size: 1.2vw;
+  font-family: v.$lato;
+  background-color: #F6F6F6 ;
+}

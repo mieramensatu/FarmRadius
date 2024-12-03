@@ -1,0 +1,43 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
+$roboto: "Roboto", sans-serif;
+$poppins: "Poppins", sans-serif;
+$lato: "Lato", sans-serif;
+
+// Color Palette
+$color: (
+  "primary": #FFB400, // Kuning cerah untuk elemen utama
+  "secondary": #D35400, // Oranye gelap untuk elemen aksi
+  "accent": #2ECC71, // Hijau segar untuk tombol konfirmasi
+  "background": #FFF8E1, // Latar belakang putih kekuningan
+  "text-primary": #4E342E, // Coklat gelap untuk teks utama
+  "text-secondary": #7B5E57, // Coklat terang untuk teks sekunder
+  "success": #28A745, // Hijau untuk status berhasil
+  "error": #E74C3C, // Merah untuk pesan kesalahan
+  "warning": #F39C12, // Kuning-oranye untuk peringatan
+  "info": #3498DB, // Biru lembut untuk informasi
+  "white": #FFFFFF,
+  "dark-gray": #595959, // Abu-abu gelap
+  "light-gray": #D9D9D9, // Abu-abu terang
+  "light-color": #ebebeb
+);
+
+// Spacing
+$padding-horizontal-main: 3.4vw;
+$padding-vertical-main: 2.4vw;
+
+// Border Radius
+$border-radius-small: 5px;
+$border-radius-medium: 8px;
+$border-radius-large: 16px;
+
+// Transition
+$transition-default: all 0.3s ease-in-out;
+
+// Widths
+$width-sidebar: 18vw;
+
+// Font Sizes
+$font-size-small: 0.9vw;
+$font-size-medium: 1.2vw;
+$font-size-large: 1.5vw;

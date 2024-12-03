@@ -1,0 +1,110 @@
+@use "./../../helper/mixins" as m;
+@use "./../../helper/variables" as v;
+
+.nav {
+  width: 100%;
+  height: auto;
+  padding: v.$padding-vertical-main v.$padding-horizontal-main;
+  display: grid;
+  grid-template-columns: 18vw 1fr 18vw;
+
+  &-logo {
+    @include m.flex($justify: flex-start);
+    gap: 0.6vw;
+    text-decoration: none;
+
+    img {
+      width: 3vw;
+      height: auto;
+      object-fit: cover;
+    }
+
+    span {
+      font-family: v.$poppins;
+      font-size: 2.3vw;
+      font-weight: 500;
+      color: map-get(v.$color, "dark-gray");
+      text-transform: uppercase;
+    }
+  }
+
+  &-main {
+    @include m.flex($direction: column);
+    gap: 1vw;
+
+    .search {
+      @include m.flex();
+      border-radius: 10vw;
+      border: 0.15vw solid map-get(v.$color, "accent");
+      padding: 0.3vw;
+
+      button {
+        @include m.flex();
+        border-radius: 50%;
+        background-color: map-get(v.$color, "accent");
+        color: map-get(v.$color, "white");
+        font-size: 1.1vw;
+        border: none;
+        outline: none;
+        padding: 0.7vw;
+        cursor: pointer;
+
+        &:hover {
+          background-color: map-get(v.$color, "secondary");
+        }
+      }
+
+      input {
+        width: 34vw;
+        padding: 0 0.5vw;
+        border-top-right-radius: 10vw;
+        border-bottom-right-radius: 10vw;
+        font-size: 1.1vw;
+        color: map-get(v.$color, "dark-gray");
+        border: none;
+        outline: none;
+        background-color: transparent;
+      }
+    }
+
+    .links {
+      @include m.flex();
+      gap: 1.05vw;
+
+      a {
+        @include m.flex();
+        color: map-get(v.$color, "dark-gray");
+        text-decoration: none;
+        line-height: 100%;
+
+        &:hover {
+          color: map-get(v.$color, "primary");
+        }
+
+        &.active {
+          color: map-get(v.$color, "white");
+          background-color: map-get(v.$color, "primary");
+          padding: 0.4vw 0.9vw;
+          border-radius: 10vw;
+        }
+      }
+    }
+  }
+
+  &-others {
+    @include m.flex($justify: flex-end);
+    gap: 0.25vw;
+
+    a {
+      text-decoration: none;
+    }
+
+    .material-symbols-rounded {
+      @include m.flex();
+      font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 24;
+      font-size: 2.5vw;
+      color: map-get(v.$color, "primary");
+      cursor: pointer;
+    }
+  }
+}

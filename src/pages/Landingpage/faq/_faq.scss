@@ -1,0 +1,110 @@
+@use "./../../../helper/mixins" as m;
+@use "./../../../helper/variables" as v;
+
+@mixin faq() {
+  .faq-section {
+    text-align: center;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 2rem auto;
+
+    h2 {
+      font-size: 2rem;
+      color: #333;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 1rem;
+      color: #666;
+      margin-bottom: 2rem;
+    }
+
+    .faq-search {
+      margin-bottom: 2rem;
+
+      input {
+        width: 100%;
+        max-width: 600px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        border: 2px solid #ddd;
+        border-radius: 20px;
+        outline: none;
+        transition: border-color 0.3s;
+
+        &:focus {
+          border-color: #007bff;
+        }
+      }
+    }
+
+    .faq-items {
+      text-align: left;
+      margin: 0 auto;
+      max-width: 800px;
+
+      .faq-item {
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background-color: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s;
+
+        &:hover {
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .faq-question {
+          font-size: 1.2rem;
+          font-weight: bold;
+          color: #333;
+          cursor: pointer;
+          margin: 0;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          .faq-toggle {
+            color: map-get($map: v.$color, $key: "light-cyan");
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+
+            &:hover {
+              transform: scale(1.1);
+            }
+          }
+        }
+
+        .faq-answer {
+          font-size: 1rem;
+          color: #666;
+          margin-top: 0.5rem;
+          overflow: hidden;
+          max-height: 0;
+          opacity: 0;
+          padding-top: 0;
+          padding-bottom: 0;
+          transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+        }
+
+        &.active .faq-answer {
+          max-height: 30px;
+          opacity: 1;
+          padding-top: 0.5rem;
+          padding-bottom: 0.5rem;
+        }
+      }
+    }
+  }
+}
