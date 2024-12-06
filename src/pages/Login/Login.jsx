@@ -23,8 +23,10 @@ function Login() {
     try {
       console.log("Submitted Values:", values);
 
-      const response = await axios.post(
-        "https://farmmonitoring-7f23543656d8.herokuapp.com/login",
+    // Kirim data login ke server
+    axios
+      .post(
+        "https://farmdistribution-40a43a4491b1.herokuapp.com/login",
         values,
         {
           headers: {
