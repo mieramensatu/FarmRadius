@@ -8,8 +8,7 @@
   grid-template-columns: 0.25fr 0.75fr;
   grid-template-areas:
     "map map"
-    "location location"
-    "filter overview";
+    "location location";
 
   &-map {
     width: 100%;
