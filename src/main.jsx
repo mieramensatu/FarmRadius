@@ -7,6 +7,8 @@ import Product from "./pages/product/Product";
 import Landingpage from "./pages/landingpage/Landing";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
+import Dashboard from "./pages/Admin/Dashboard";
+import Profile from "./pages/Admin/Profile/Profile";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -16,6 +18,9 @@ createRoot(document.getElementById("root")).render(
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Register />} />
         <Route path="/product" element={<Product />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard/product" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

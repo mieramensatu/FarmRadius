@@ -2,11 +2,18 @@
 @use "./helper/variables" as v;
 
 @use "./component/Navbar/navbar";
+@use "./component/Footer/footer";
+@use "./component/Topbar/topbar";
+@use "./component/Sidebar/sidebar";
+
+@use "./pages/Admin/Profile/profile";
+
 @use "./pages/Login/login";
 @use "./pages/Register/register";
-@use "./component/Footer/footer";
-
 @use "./pages/landingpage/landingpage";
+@use "./pages/Admin/dashboard";
+@use "./pages/Product/product";
+
 *,
 *::before,
 *::after {

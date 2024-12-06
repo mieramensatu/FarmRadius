@@ -1,0 +1,28 @@
+@use "./../../helper/variables" as v;
+@use "./../../helper/mixins" as m;
+
+.dashboard {
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      "sidebar topbar"
+      "sidebar main";
+  
+    .topbar {
+      grid-area: topbar;
+    }
+  
+    .sidebar {
+      grid-area: sidebar;
+    }
+  
+    .content {
+      grid-area: main;
+      padding: v.$py-content v.$px-layout;
+      width: 100%;
+      min-height: 100vh;
+    }
+  }
+  

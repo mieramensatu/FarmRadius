@@ -1,7 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import Cookies from "js-cookie"; // Import js-cookie
+import Cookies from "js-cookie";
+import CryptoJS from "crypto-js"; // Import library CryptoJS
 import { Link } from "react-router-dom";
 
 function Login() {
@@ -16,15 +17,13 @@ function Login() {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Debug: Tampilkan data yang akan dikirim
-    console.log("Submitted Values:", values);
+    try {
+      console.log("Submitted Values:", values);
 
-    // Kirim data login ke server
-    axios
-      .post(
+      const response = await axios.post(
         "https://farmmonitoring-7f23543656d8.herokuapp.com/login",
         values,
         {
@@ -32,50 +31,51 @@ function Login() {
             "Content-Type": "application/json",
           },
         }
-      )
-      .then((response) => {
-        console.log("Server Response:", response.data); // Debugging respons server
+      );
 
-        // Ambil data dari respons server
-        const { message = "", token = null, user = null } = response.data;
+      console.log("Server Response:", response.data);
 
-        if (user) {
-          // Simpan token ke cookies
-          if (token) {
-            Cookies.set("login", token, { expires: 7 }); // Token disimpan selama 7 hari
-          }
+      const { message = "", token = null, user = null } = response.data;
 
-          // Tampilkan notifikasi sukses
-          Swal.fire({
-            icon: "success",
-            title: "Login Successful",
-            text: message || "You have successfully logged in!",
-            confirmButtonText: "OK",
-          }).then(() => {
-            // Redirect ke halaman produk
-            window.location.href = "/product";
-          });
-        } else {
-          // Tampilkan notifikasi gagal
-          Swal.fire({
-            icon: "error",
-            title: "Login Failed",
-            text: message || "Incorrect email or password!",
-            confirmButtonText: "Try Again",
-          });
+      if (user) {
+        if (token) {
+          // Simpan token ke Cookies
+          Cookies.set("login", token, { expires: 7 });
+
+          // Enkripsi role sebelum menyimpan ke cookie
+          const encryptedRole = CryptoJS.AES.encrypt(
+            user.nama_role,
+            "your-secret-key"
+          ).toString();
+          Cookies.set("role", encryptedRole, { expires: 7 });
         }
-      })
-      .catch((error) => {
-        console.error("Login Error:", error.response?.data || error.message); // Debugging error
 
-        // Tangani error dari server
+        Swal.fire({
+          icon: "success",
+          title: "Login Successful",
+          text: message || "You have successfully logged in!",
+          confirmButtonText: "OK",
+        }).then(() => {
+          window.location.href = "/product"; // Redirect setelah login
+        });
+      } else {
         Swal.fire({
           icon: "error",
-          title: "Error",
-          text: error.response?.data?.message || "Something went wrong!",
-          confirmButtonText: "OK",
+          title: "Login Failed",
+          text: message || "Incorrect email or password!",
+          confirmButtonText: "Try Again",
         });
+      }
+    } catch (error) {
+      console.error("Login Error:", error.response?.data || error.message);
+
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error.response?.data?.message || "Something went wrong!",
+        confirmButtonText: "OK",
       });
+    }
   };
 
   return (

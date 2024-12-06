@@ -1,46 +1,48 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import Logo from "./../../assets/logo/logo-ayam-removebg-preview1.png";
 
-function sidebar() {
+function Sidebar() {
   return (
     <>
-      <header class="app-header">
-        <div class="app-header-navigation">
-          <div class="dashboard-submenu submenu">
-            <a href="/dashboard">
-              <span class="material-symbols-outlined"> dashboard </span>
-              <span> Dashboard</span>
-            </a>
-          </div>
-          <div class="management-product-submenu submenu" style="display: none">
-            <a href="/management-product">
-              <span class="material-symbols-outlined"> package_2 </span>
-              <span> Products</span>
-            </a>
-            <div class="submenu-item">
-              <a href="/management-product/categories">
-                <span class="material-symbols-outlined"> category </span>
-                <span class="text"> Categories </span>
-              </a>
-            </div>
-          </div>
+      <aside className="navigation">
+        <div className="navigation-logo">
+          <Link href="/" className="nav-logo">
+            <img src={Logo} alt="GoBiz Logo" />
+            <span>FarmRadius</span>
+          </Link>
+          <span className="material-symbols-outlined"> left_panel_close </span>
         </div>
-        <div class="app-header-actions">
-          <a href="/profile" class="user-profile">
-            <span>Matheo Peterson</span>
-            <span>
-              <img src="https://assets.codepen.io/285131/almeria-avatar.jpeg" />
-            </span>
-          </a>
-          <div class="app-header-actions-buttons">
-            <div class="icon-button">
-              <i class="ph ph-magnifying-glass"></i>
-            </div>
-            <div class="icon-button">
-              <i class="ph ph-bell"></i>
-            </div>
-          </div>
+
+        <div className="navigation-nav">
+          <Link href="/dashboard" data-menu="dashboard" className="menu-item">
+            <i className="ph ph-gauge"></i>
+            <span>Dashboard</span>
+          </Link>
+          <Link
+            href="/Management-product"
+            data-menu="management-product"
+            className="menu-item"
+          >
+            <i className="ph ph-storefront"></i>
+            <span>Management Product</span>
+          </Link>
+          <Link href="/Management-customer" data-menu="management-customer" className="menu-item">
+            <i className="ph ph-users"></i>
+            <span>Customer</span>
+          </Link>
+          <Link href="/map" data-menu="map" className="menu-item">
+            <i className="ph ph-map-pin-area"></i>
+            <span>Map</span>
+          </Link>
+          <Link className="logout" href="#">
+            <i className="ph ph-sign-out"></i>
+            <span>Logout</span>
+          </Link>
         </div>
-      </header>
+      </aside>
     </>
   );
 }
+
+export default Sidebar;
