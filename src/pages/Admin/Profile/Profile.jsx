@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import Dashboard from "../Dashboard";
 import axios from "axios";
 import Cookies from "js-cookie";
+import Swal from "sweetalert2";
+import "./_profile.scss";
 import { Link } from "react-router-dom";
 
 function Profile() {
-  const token = Cookies.get("login"); // Ambil token dari cookie
-  const [profileData, setProfileData] = useState(null); // Simpan data profile
-  const [error, setError] = useState(null); // Simpan error jika ada
+  const token = Cookies.get("login"); // Get token from cookies
+  const [profileData, setProfileData] = useState(null); // Store profile data
+  const [error, setError] = useState(null); // Store error if any
 
   useEffect(() => {
     if (!token) {
@@ -33,12 +35,71 @@ function Profile() {
       });
   }, [token]);
 
+  const handleUploadImage = () => {
+    Swal.fire({
+      title: "Upload Profile Image",
+      input: "file",
+      inputAttributes: {
+        accept: "image/*",
+        "aria-label": "Upload your profile image",
+      },
+      showCancelButton: true,
+      confirmButtonText: "Upload",
+      showLoaderOnConfirm: true,
+      preConfirm: (file) => {
+        if (!file) {
+          Swal.showValidationMessage("Please select an image");
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("image", file);
+
+        return axios
+          .put(
+            "https://farmdistribution-40a43a4491b1.herokuapp.com/profile/add-image",
+            formData,
+            {
+              headers: {
+                login: token,
+              },
+            }
+          )
+          .then((response) => {
+            if (!response.data) {
+              throw new Error(response.statusText);
+            }
+            return response.data;
+          })
+          .catch((error) => {
+            console.error("Error uploading image:", error);
+            Swal.showValidationMessage("Failed to upload image. Please try again.");
+          });
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          icon: "success",
+          title: "Image Uploaded",
+          text: "Your profile image has been updated successfully.",
+        });
+
+        // Refresh the profile data to reflect the updated image
+        setProfileData((prevData) => ({
+          ...prevData,
+          image: URL.createObjectURL(result.value),
+        }));
+      }
+    });
+  };
+
   if (error) {
-    return <p>{error}</p>; // Tampilkan pesan error
+    return <p>{error}</p>; // Display error message
   }
 
   if (!profileData) {
-    return <p>Loading...</p>; // Tampilkan loading jika data belum tersedia
+    return <p>Loading...</p>; // Display loading if data is not available
   }
 
   return (
@@ -50,7 +111,11 @@ function Profile() {
               src={profileData.image || "https://via.placeholder.com/120"}
               alt="Profile"
             />
-            <div className="camera-icon">
+            <div
+              className="camera-icon"
+              onClick={handleUploadImage}
+              style={{ cursor: "pointer" }}
+            >
               <i className="fa fa-camera"></i>
             </div>
           </div>
@@ -77,8 +142,9 @@ function Profile() {
           </div>
 
           <div className="upload-buttons">
-            <button className="upload-logo">Logo</button>
-            <button className="upload-documents">Vendor Documents</button>
+            <button className="upload-image" onClick={handleUploadImage}>
+              Add/Edit Profile Image
+            </button>
           </div>
 
           <div className="edit-profile-container">
