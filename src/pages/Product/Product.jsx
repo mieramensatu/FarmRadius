@@ -13,14 +13,13 @@ function Product() {
         <div className="listing-map">
           <MapComponent />
         </div>
-
         <div className="listing-location">
           <div className="listing-location-title">
-            Universitas Logisitik dan Bisnis Internasional
+            Farm Radius
           </div>
           <div className="listing-location-desc">
             Silahkan datang menuju lokasi kami bila Anda memerlukan sesuatu pada
-            MakaNear
+            Farm Radius
           </div>
         </div>
       </div>

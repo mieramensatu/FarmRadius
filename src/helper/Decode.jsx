@@ -13,6 +13,8 @@ export function DecodeRole() {
         "your-secret-key"
       ).toString(CryptoJS.enc.Utf8);
       setGetRole(decryptedRole);
+    } else {
+      console.log("Role cookie tidak ditemukan");
     }
   }, []);
 
