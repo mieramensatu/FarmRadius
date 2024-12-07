@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Dashboard from "../Dashboard";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { Link } from "react-router-dom";
 
 function Profile() {
   const token = Cookies.get("login"); // Ambil token dari cookie
@@ -16,7 +17,7 @@ function Profile() {
     }
 
     axios
-      .get("https://farmmonitoring-7f23543656d8.herokuapp.com/profile", {
+      .get("https://farmdistribution-40a43a4491b1.herokuapp.com/profile", {
         headers: {
           "Content-Type": "application/json",
           login: token,
@@ -46,7 +47,7 @@ function Profile() {
         <div className="profile-card">
           <div className="profile-picture">
             <img
-              src="https://via.placeholder.com/120"
+              src={profileData.image || "https://via.placeholder.com/120"}
               alt="Profile"
             />
             <div className="camera-icon">
@@ -81,9 +82,9 @@ function Profile() {
           </div>
 
           <div className="edit-profile-container">
-            <button className="edit-profile">
+            <Link to="/edit-profile" className="edit-profile">
               <i className="fa fa-edit"></i> Edit Profile
-            </button>
+            </Link>
           </div>
         </div>
       </div>

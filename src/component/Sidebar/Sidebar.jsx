@@ -25,11 +25,11 @@ function Sidebar() {
             className="menu-item"
           >
             <i className="ph ph-storefront"></i>
-            <span>Management Product</span>
+            <span>Product</span>
           </Link>
-          <Link href="/Management-customer" data-menu="management-customer" className="menu-item">
-            <i className="ph ph-users"></i>
-            <span>Customer</span>
+          <Link href="/Management-order" data-menu="management-order" className="menu-item">
+            <i className="ph ph-shopping-cart"></i>
+            <span>Order</span>
           </Link>
           <Link href="/map" data-menu="map" className="menu-item">
             <i className="ph ph-map-pin-area"></i>

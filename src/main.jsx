@@ -9,6 +9,7 @@ import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import Dashboard from "./pages/Admin/Dashboard";
 import Profile from "./pages/Admin/Profile/Profile";
+import EditProfile from "./pages/Admin/EditProfile/EditProfile";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -19,6 +20,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/signup" element={<Register />} />
         <Route path="/product" element={<Product />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/product" element={<Dashboard />} />
       </Routes>
