@@ -16,10 +16,10 @@ function Profile() {
     }
 
     axios
-      .get("https://farmmonitoring-7f23543656d8.herokuapp.com/profile", {
+      .get("https://farmdistribution-40a43a4491b1.herokuapp.com/profile", {
         headers: {
           "Content-Type": "application/json",
-          login: token,
+          "login": token,
         },
       })
       .then((res) => {
@@ -46,7 +46,7 @@ function Profile() {
         <div className="profile-card">
           <div className="profile-picture">
             <img
-              src="https://via.placeholder.com/120"
+              src={profileData.image || "https://via.placeholder.com/120"}
               alt="Profile"
             />
             <div className="camera-icon">
