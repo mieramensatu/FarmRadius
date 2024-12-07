@@ -111,10 +111,19 @@ function EditProfile() {
       return;
     }
 
+    // Ensure id_role is sent as a number
+    const updatedFormData = {
+      ...formData,
+      id_role: Number(formData.id_role),
+    };
+
+    // Log the data being sent
+    console.log("Data to be sent for update:", updatedFormData);
+
     try {
       const response = await axios.put(
         "https://farmdistribution-40a43a4491b1.herokuapp.com/profile/update",
-        formData,
+        JSON.stringify(updatedFormData), // Convert payload to JSON string
         {
           headers: {
             "Content-Type": "application/json",
@@ -131,13 +140,17 @@ function EditProfile() {
 
       console.log("Profile updated successfully:", response.data);
     } catch (error) {
+      console.error(
+        "Error response from server:",
+        error.response?.data || error
+      );
       Swal.fire({
         icon: "error",
         title: "Update Failed",
-        text: "Failed to update profile. Please try again.",
+        text:
+          error.response?.data?.message ||
+          "Failed to update profile. Please try again.",
       });
-
-      console.error("Error updating profile:", error);
     }
   };
 
