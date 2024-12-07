@@ -34,6 +34,27 @@
         height: auto;
         object-fit: cover;
       }
+
+      .camera-icon {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background: #007bff;
+        color: #fff;
+        border-radius: 50%;
+        padding: 10px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: #0056b3;
+        }
+
+        i {
+          font-size: 16px;
+        }
+      }
     }
 
     .profile-details {
@@ -74,6 +95,17 @@
         &:hover {
           border-color: #888;
         }
+
+        &.upload-image {
+          border: 2px solid #007bff;
+          color: #007bff;
+          font-weight: bold;
+
+          &:hover {
+            background: #007bff;
+            color: #fff;
+          }
+        }
       }
     }
 
@@ -105,6 +137,49 @@
           background: #4a90e2;
           color: #fff;
         }
+      }
+    }
+  }
+
+  // New styling for the image upload popup/modal
+  .image-upload-popup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+
+    .drag-drop-area {
+      width: 100%;
+      max-width: 300px;
+      height: 150px;
+      border: 2px dashed #ccc;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: #666;
+      font-size: 14px;
+      cursor: pointer;
+      transition: border-color 0.3s ease;
+
+      &:hover {
+        border-color: #007bff;
+      }
+    }
+
+    .select-file-button {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: #0056b3;
       }
     }
   }
