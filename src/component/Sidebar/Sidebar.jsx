@@ -15,19 +15,23 @@ function Sidebar() {
         </div>
 
         <div className="navigation-nav">
-          <Link href="/dashboard" data-menu="dashboard" className="menu-item">
+          <Link to="/dashboard" data-menu="dashboard" className="menu-item">
             <i className="ph ph-gauge"></i>
             <span>Dashboard</span>
           </Link>
           <Link
-            href="/Management-product"
-            data-menu="management-product"
+            to="/product"
+            data-menu="product"
             className="menu-item"
           >
             <i className="ph ph-storefront"></i>
             <span>Product</span>
           </Link>
-          <Link href="/Management-order" data-menu="management-order" className="menu-item">
+          <Link
+            href="/Management-order"
+            data-menu="management-order"
+            className="menu-item"
+          >
             <i className="ph ph-shopping-cart"></i>
             <span>Order</span>
           </Link>
