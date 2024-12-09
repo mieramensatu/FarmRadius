@@ -34,7 +34,8 @@
     border-collapse: collapse;
     font-family: Arial, sans-serif;
 
-    th, td {
+    th,
+    td {
       text-align: left;
       padding: 12px;
     }
@@ -74,17 +75,18 @@
       text-transform: uppercase;
 
       &.available {
-        background-color: #4caf50;
+        background-color: #4caf50; // Hijau
         color: white;
       }
 
-      &.on-hold {
-        background-color: #f44336;
+      &.unavailable {
+        background-color: #f44336; // Merah
         color: white;
       }
     }
 
-    .edit-button, .delete-button {
+    .edit-button,
+    .delete-button {
       padding: 5px 10px;
       margin-right: 5px;
       border: none;

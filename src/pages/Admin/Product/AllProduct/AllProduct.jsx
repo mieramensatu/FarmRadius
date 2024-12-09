@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Dashboard from "../../Dashboard";
 import Cookies from "js-cookie";
+import Swal from "sweetalert2";
 import "./_allproduct.scss"; // Import SCSS
 
 function PeternakProduct() {
@@ -48,10 +49,46 @@ function PeternakProduct() {
     navigate(`/edit-product/${id}`); // Navigasi ke halaman edit produk
   };
 
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      console.log(`Product with ID ${id} deleted`); // Tambahkan logika hapus data di sini
-    }
+  const handleDelete = async (id) => {
+    const token = Cookies.get("login");
+
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await fetch(
+            `https://farmdistribution-40a43a4491b1.herokuapp.com/product/delete?id=${id}`,
+            {
+              method: "DELETE",
+              headers: {
+                login: token,
+              },
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Failed to delete product");
+          }
+
+          // Menghapus produk dari state setelah berhasil dihapus dari server
+          setProducts((prevProducts) =>
+            prevProducts.filter((product) => product.id !== id)
+          );
+
+          Swal.fire("Deleted!", "Your product has been deleted.", "success");
+        } catch (error) {
+          console.error("Error deleting product:", error);
+          Swal.fire("Error!", "Failed to delete product. Please try again.", "error");
+        }
+      }
+    });
   };
 
   return (
@@ -94,14 +131,19 @@ function PeternakProduct() {
                   <td>{product.description}</td>
                   <td>Desserts</td>
                   <td>
-                    {new Date(product.available_date).toLocaleDateString()}
+                    {product.available_date
+                      ? new Date(product.available_date).toLocaleDateString()
+                      : "No available date"}
                   </td>
+
                   <td>
                     <span
                       className={`status-label ${
                         product.status_name === "Tersedia"
                           ? "available"
-                          : "on-hold"
+                          : product.status_name === "Tidak Tersedia"
+                          ? "unavailable"
+                          : "available"
                       }`}
                     >
                       {product.status_name}
