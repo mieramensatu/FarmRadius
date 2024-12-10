@@ -2,16 +2,14 @@ import React from "react";
 import Navbar from "../../component/Navbar/Navbar";
 import HeroComponent from "./hero/hero";
 import Partner from "./partner/partner";
-import SmoothScroll from "../../helper/SmoothScroll";
 import Footer from "../../component/Footer/footer";
 import Tim from "./team/Team";
 import Information from "./information/information.JSX";
 import Faq from "./faq/faq";
 
-function Landingpage() {
+function Landingpage({ children }) {
   return (
     <>
-      <SmoothScroll />
       <Navbar />
       <div class="home">
         <div class="hero">

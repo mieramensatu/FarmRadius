@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Dashboard from "../Dashboard";
 import Cookies from "js-cookie";
-import Swal from "sweetalert2"; // Import SweetAlert2
+import Swal from "sweetalert2";
 import "./_editprofile.scss";
+import { Link } from "react-router-dom";
 
 function EditProfile() {
-  // State variables for form inputs
   const [formData, setFormData] = useState({
     nama: "",
     no_telp: "",
@@ -19,11 +19,10 @@ function EditProfile() {
     country: "",
   });
 
-  const [roles, setRoles] = useState([]); // State to store roles
-  const [loading, setLoading] = useState(true); // To handle loading state
-  const [error, setError] = useState(null); // To handle errors
+  const [roles, setRoles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Fetch the profile data and roles on component mount
   useEffect(() => {
     const token = Cookies.get("login");
 
@@ -40,7 +39,6 @@ function EditProfile() {
 
     const fetchProfileAndRoles = async () => {
       try {
-        // Fetch profile data
         const profileResponse = await axios.get(
           "https://farmdistribution-40a43a4491b1.herokuapp.com/profile",
           {
@@ -51,7 +49,6 @@ function EditProfile() {
           }
         );
 
-        // Fetch roles data
         const rolesResponse = await axios.get(
           "https://farmdistribution-40a43a4491b1.herokuapp.com/role",
           {
@@ -62,7 +59,6 @@ function EditProfile() {
           }
         );
 
-        // Update form data with profile data
         setFormData({
           nama: profileResponse.data.nama || "",
           no_telp: profileResponse.data.no_telp || "",
@@ -75,9 +71,8 @@ function EditProfile() {
           country: profileResponse.data.address?.country || "",
         });
 
-        // Update roles state
         setRoles(rolesResponse.data.roles || []);
-        setLoading(false); // Data is loaded
+        setLoading(false);
       } catch (err) {
         console.error("Error fetching profile or roles data:", err);
         Swal.fire({
@@ -93,7 +88,6 @@ function EditProfile() {
     fetchProfileAndRoles();
   }, []);
 
-  // Update form state on input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -111,19 +105,15 @@ function EditProfile() {
       return;
     }
 
-    // Ensure id_role is sent as a number
     const updatedFormData = {
       ...formData,
       id_role: Number(formData.id_role),
     };
 
-    // Log the data being sent
-    console.log("Data to be sent for update:", updatedFormData);
-
     try {
-      const response = await axios.put(
+      await axios.put(
         "https://farmdistribution-40a43a4491b1.herokuapp.com/profile/update",
-        JSON.stringify(updatedFormData), // Convert payload to JSON string
+        JSON.stringify(updatedFormData),
         {
           headers: {
             "Content-Type": "application/json",
@@ -137,8 +127,6 @@ function EditProfile() {
         title: "Profile Updated",
         text: "Profile updated successfully!",
       });
-
-      console.log("Profile updated successfully:", response.data);
     } catch (error) {
       console.error(
         "Error response from server:",
@@ -154,123 +142,207 @@ function EditProfile() {
     }
   };
 
-  if (loading) {
-    return <p>Loading data...</p>;
-  }
+  const handleUploadImage = () => {
+    Swal.fire({
+      title: "Upload Profile Image",
+      input: "file",
+      inputAttributes: {
+        accept: "image/*",
+        "aria-label": "Upload your profile image",
+      },
+      showCancelButton: true,
+      confirmButtonText: "Upload",
+      showLoaderOnConfirm: true,
+      preConfirm: (file) => {
+        if (!file) {
+          Swal.showValidationMessage("Please select an image");
+          return;
+        }
 
-  if (error) {
-    return <p>{error}</p>;
-  }
+        const formData = new FormData();
+        formData.append("image", file);
 
+        return axios
+          .put(
+            "https://farmdistribution-40a43a4491b1.herokuapp.com/profile/add-image",
+            formData,
+            {
+              headers: {
+                login: token,
+              },
+            }
+          )
+          .then((response) => {
+            if (!response.data) {
+              throw new Error(response.statusText);
+            }
+            return response.data;
+          })
+          .catch((error) => {
+            console.error("Error uploading image:", error);
+            Swal.showValidationMessage(
+              "Failed to upload image. Please try again."
+            );
+          });
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          icon: "success",
+          title: "Image Uploaded",
+          text: "Your profile image has been updated successfully.",
+        });
+
+        // Refresh the profile data to reflect the updated image
+        setProfileData((prevData) => ({
+          ...prevData,
+          image: URL.createObjectURL(result.value),
+        }));
+      }
+    });
+  };
   return (
     <Dashboard>
       <div className="edit-profile-container">
-        <h2>Edit Profile</h2>
-        <form className="edit-profile-form">
-          <div className="form-group">
-            <label htmlFor="nama">Name</label>
-            <input
-              type="text"
-              id="nama"
-              name="nama"
-              value={formData.nama}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="no_telp">Phone Number</label>
-            <input
-              type="text"
-              id="no_telp"
-              name="no_telp"
-              value={formData.no_telp}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="id_role">Role</label>
-            <select
-              id="id_role"
-              name="id_role"
-              value={formData.id_role}
-              onChange={handleInputChange}
-            >
-              <option value="">Select a Role</option>
-              {roles.map((role) => (
-                <option key={role.id} value={role.id}>
-                  {role.name_role}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="form-group">
-            <label htmlFor="street">Street</label>
-            <input
-              type="text"
-              id="street"
-              name="street"
-              value={formData.street}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="city">City</label>
-            <input
-              type="text"
-              id="city"
-              name="city"
-              value={formData.city}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="state">State</label>
-            <input
-              type="text"
-              id="state"
-              name="state"
-              value={formData.state}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="postal_code">Postal Code</label>
-            <input
-              type="text"
-              id="postal_code"
-              name="postal_code"
-              value={formData.postal_code}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="country">Country</label>
-            <input
-              type="text"
-              id="country"
-              name="country"
-              value={formData.country}
-              onChange={handleInputChange}
-            />
-          </div>
-          <button
-            type="button"
-            className="edit-profile"
-            onClick={handleUpdateProfile}
-          >
-            <i className="fa fa-save"></i> Save Profile
-          </button>
-        </form>
+        {error && <p>{error}</p>}
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <>
+            <div className="edit-profile-grid">
+              {/* Kolom Gambar */}
+              <div className="profile-image">
+                <img
+                  src="https://via.placeholder.com/120"
+                  alt="Default Profile"
+                />
+              </div>
+
+              {/* Kolom Input */}
+              <div className="profile-inputs">
+                {/* Baris 1 */}
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Name</label>
+                    <input
+                      type="text"
+                      name="nama"
+                      value={formData.nama}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Phone Number</label>
+                    <input
+                      type="text"
+                      name="no_telp"
+                      value={formData.no_telp}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                </div>
+
+                {/* Baris 2 */}
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Email</label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Role</label>
+                    <select
+                      name="id_role"
+                      value={formData.id_role}
+                      onChange={handleInputChange}
+                    >
+                      <option value="">Select a Role</option>
+                      {roles.map((role) => (
+                        <option key={role.id} value={role.id}>
+                          {role.name_role}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Baris 3 */}
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Street</label>
+                    <input
+                      type="text"
+                      name="street"
+                      value={formData.street}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>City</label>
+                    <input
+                      type="text"
+                      name="city"
+                      value={formData.city}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                </div>
+
+                {/* Baris 4 */}
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>State</label>
+                    <input
+                      type="text"
+                      name="state"
+                      value={formData.state}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Postal Code</label>
+                    <input
+                      type="text"
+                      name="postal_code"
+                      value={formData.postal_code}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                </div>
+
+                {/* Baris 5 */}
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Country</label>
+                    <input
+                      type="text"
+                      name="country"
+                      value={formData.country}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                </div>
+              </div>
+              {/* Tombol Upload dan Save */}
+              <div className="upload-buttons">
+                <button className="upload-image" onClick={handleUploadImage}>
+                  Upload Image
+                </button>
+              </div>
+              <div className="edit-profile-container">
+                <Link to="/dashboard/profile" className="edit-profile">
+                  Back to Profile
+                </Link>
+                <button className="edit-profile" onClick={handleUpdateProfile}>Save Profile</button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </Dashboard>
   );

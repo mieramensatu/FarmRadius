@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import Dashboard from "../Dashboard";
 import axios from "axios";
 import Cookies from "js-cookie";
 import Swal from "sweetalert2";
 import "./_profile.scss";
 import { Link } from "react-router-dom";
 
-function ProfileAdmin() {
-  const token = Cookies.get("login"); // Get token from cookies
+function Profile() {
+  const token = Cookies.get("login");
   const [profileData, setProfileData] = useState(null); // Store profile data
   const [error, setError] = useState(null); // Store error if any
 
@@ -94,59 +93,62 @@ function ProfileAdmin() {
     });
   };
 
+  if (error) {
+    return <p>{error}</p>; // Display error message
+  }
+
+  if (!profileData) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <Dashboard>
-      <p>Profile</p>
+    <Landingpage />
       <div className="profile-container">
-        {error && <p>{error}</p>}
-        {!profileData && !error && <p>Loading...</p>}
-        {profileData && (
-          <div className="profile-card">
-            <div className="profile-picture">
-              <img
-                src={profileData.image || "https://via.placeholder.com/120"}
-                alt="Profile"
-              />
-            </div>
-
-            <div className="profile-details">
-              <p>
-                <strong>Name:</strong> {profileData.nama || "N/A"}
-              </p>
-              <p>
-                <strong>Email:</strong> {profileData.email || "N/A"}
-              </p>
-              <p>
-                <strong>Phone Number:</strong> {profileData.no_telp || "N/A"}
-              </p>
-              <p>
-                <strong>Role:</strong> {profileData.role_name || "N/A"}
-              </p>
-              <p>
-                <strong>Address:</strong>{" "}
-                {profileData.address
-                  ? `${profileData.address.street}, ${profileData.address.city}, ${profileData.address.state}, ${profileData.address.postal_code}, ${profileData.address.country}`
-                  : "N/A"}
-              </p>
-            </div>
-
-            <div className="upload-buttons">
-              <button className="upload-image" onClick={handleUploadImage}>
-                <p>Upload Image</p>
-              </button>
-            </div>
-
-            <div className="edit-profile-container">
-              <Link to="/edit-profile" className="edit-profile">
-                <p>Edit Profile</p>
-              </Link>
-            </div>
+        <div className="profile-card">
+          <div className="profile-picture">
+            <img
+              src={profileData.image || "https://via.placeholder.com/120"}
+              alt="Profile"
+            />
           </div>
-        )}
+
+          <div className="profile-details">
+            <p>
+              <strong>Name:</strong> {profileData.nama || "N/A"}
+            </p>
+            <p>
+              <strong>Email:</strong> {profileData.email || "N/A"}
+            </p>
+            <p>
+              <strong>Phone Number:</strong> {profileData.no_telp || "N/A"}
+            </p>
+            <p>
+              <strong>Role:</strong> {profileData.role_name || "N/A"}
+            </p>
+            <p>
+              <strong>Address:</strong>{" "}
+              {profileData.address
+                ? `${profileData.address.street}, ${profileData.address.city}, ${profileData.address.state}, ${profileData.address.postal_code}, ${profileData.address.country}`
+                : "N/A"}
+            </p>
+          </div>
+
+          <div className="upload-buttons">
+            <button className="upload-image" onClick={handleUploadImage}>
+              <p>Edit foto</p>
+            </button>
+          </div>
+
+          <div className="edit-profile-container">
+            <Link to="/edit-profile" className="edit-profile">
+              <i className="fa fa-edit"></i> Edit Profile
+            </Link>
+          </div>
+        </div>
       </div>
     </Dashboard>
   );
 }
 
-export default ProfileAdmin;
-
+export default Profile;

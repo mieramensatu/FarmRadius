@@ -54,7 +54,7 @@ function Topbar() {
         <div className="dashboard-submenu submenu">Profile</div>
       </div>
       <div className="app-header-actions">
-        <Link to="/profile" className="user-profile">
+        <Link to="/dashboard/profile" className="user-profile">
           <span>{profile.name}</span>
           <span>
             <img src={profile.image} alt="User Profile" />

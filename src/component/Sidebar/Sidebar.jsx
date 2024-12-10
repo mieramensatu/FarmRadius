@@ -20,7 +20,7 @@ function Sidebar() {
             <span>Dashboard</span>
           </Link>
           <Link
-            to="/product"
+            to="/dashboard/product"
             data-menu="product"
             className="menu-item"
           >
