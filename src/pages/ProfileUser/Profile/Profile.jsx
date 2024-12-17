@@ -102,8 +102,6 @@ function Profile() {
   }
 
   return (
-    <Dashboard>
-    <Landingpage />
       <div className="profile-container">
         <div className="profile-card">
           <div className="profile-picture">
@@ -141,13 +139,12 @@ function Profile() {
           </div>
 
           <div className="edit-profile-container">
-            <Link to="/edit-profile" className="edit-profile">
+            <Link to="edit" className="edit-profile">
               <i className="fa fa-edit"></i> Edit Profile
             </Link>
           </div>
         </div>
       </div>
-    </Dashboard>
   );
 }
 
