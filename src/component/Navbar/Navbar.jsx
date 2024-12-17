@@ -28,8 +28,8 @@ function Navbar() {
     <nav className="nav">
       {/* Logo */}
       <Link to="/" className="nav-logo to-link">
-        <img src={Logo} alt="MakaNear Logo" />
-        <span>MakaNear</span>
+        <img src={Logo} alt="FarmRadius Logo" />
+        <span>FarmRadius</span>
       </Link>
 
       <div className="nav-main">
@@ -37,7 +37,7 @@ function Navbar() {
           <button>
             <span className="material-symbols-rounded">travel_explore</span>
           </button>
-          <input type="text" placeholder="Search in MakaNear" />
+          <input type="text" placeholder="Search in FarmRadius" />
         </div>
 
         {isLoggedIn && (
