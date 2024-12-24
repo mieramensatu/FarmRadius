@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Dashboard from "../../Dashboard";
 import Cookies from "js-cookie";
+import Swal from "sweetalert2"; // Import SweetAlert2
 import "./_allproduct.scss"; // Import SCSS
 
 function PeternakProduct() {
@@ -11,6 +12,7 @@ function PeternakProduct() {
 
   useEffect(() => {
     const token = Cookies.get("login");
+
     // Fungsi untuk fetch data produk
     const fetchProducts = async () => {
       try {
@@ -41,17 +43,62 @@ function PeternakProduct() {
   }, []);
 
   const handleAddProduct = () => {
-    navigate("/add-product"); // Navigasi ke halaman tambah produk
+    navigate("/dashboard/add-product"); // Navigasi ke halaman tambah produk
   };
 
   const handleEdit = (id) => {
-    navigate(`/edit-product/${id}`); // Navigasi ke halaman edit produk
+    navigate(`/dashboard/edit-product/${id}`); // Navigasi ke halaman edit produk
   };
 
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      console.log(`Product with ID ${id} deleted`); // Tambahkan logika hapus data di sini
-    }
+  const handleDelete = async (id) => {
+    const token = Cookies.get("login");
+
+    Swal.fire({
+      title: "Are you sure?",
+      text: "This action cannot be undone!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await fetch(
+            `https://farmdistribution-40a43a4491b1.herokuapp.com/product/delete/${id}`,
+            {
+              method: "DELETE",
+              headers: {
+                login: token,
+              },
+            }
+          );
+
+          if (response.ok) {
+            Swal.fire({
+              icon: "success",
+              title: "Deleted!",
+              text: "The product has been deleted.",
+            });
+            setProducts(products.filter((product) => product.id !== id)); // Hapus produk dari state
+          } else {
+            const result = await response.json();
+            Swal.fire({
+              icon: "error",
+              title: "Failed to Delete",
+              text: result.message || "An error occurred.",
+            });
+          }
+        } catch (error) {
+          console.error("Error deleting product:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "An error occurred while deleting the product.",
+          });
+        }
+      }
+    });
   };
 
   return (
@@ -73,7 +120,6 @@ function PeternakProduct() {
                 <th>Image</th>
                 <th>Name</th>
                 <th>Description</th>
-                <th>Category</th>
                 <th>Available Date</th>
                 <th>Status</th>
                 <th>Actions</th>
@@ -92,7 +138,6 @@ function PeternakProduct() {
                   </td>
                   <td>{product.name}</td>
                   <td>{product.description}</td>
-                  <td>Desserts</td>
                   <td>
                     {new Date(product.available_date).toLocaleDateString()}
                   </td>

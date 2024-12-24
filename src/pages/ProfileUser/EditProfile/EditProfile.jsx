@@ -16,12 +16,14 @@ function EditProfile() {
     state: "",
     postal_code: "",
     country: "",
+    image: "", // Properti untuk URL gambar
   });
 
   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Load profile dan role data
   useEffect(() => {
     const token = Cookies.get("login");
 
@@ -38,25 +40,26 @@ function EditProfile() {
 
     const fetchProfileAndRoles = async () => {
       try {
-        const profileResponse = await axios.get(
-          "https://farmdistribution-40a43a4491b1.herokuapp.com/profile",
-          {
-            headers: {
-              "Content-Type": "application/json",
-              login: token,
-            },
-          }
-        );
-
-        const rolesResponse = await axios.get(
-          "https://farmdistribution-40a43a4491b1.herokuapp.com/role",
-          {
-            headers: {
-              "Content-Type": "application/json",
-              login: token,
-            },
-          }
-        );
+        const [profileResponse, rolesResponse] = await Promise.all([
+          axios.get(
+            "https://farmdistribution-40a43a4491b1.herokuapp.com/profile",
+            {
+              headers: {
+                "Content-Type": "application/json",
+                login: token,
+              },
+            }
+          ),
+          axios.get(
+            "https://farmdistribution-40a43a4491b1.herokuapp.com/role",
+            {
+              headers: {
+                "Content-Type": "application/json",
+                login: token,
+              },
+            }
+          ),
+        ]);
 
         setFormData({
           nama: profileResponse.data.nama || "",
@@ -68,6 +71,7 @@ function EditProfile() {
           state: profileResponse.data.address?.state || "",
           postal_code: profileResponse.data.address?.postal_code || "",
           country: profileResponse.data.address?.country || "",
+          image: profileResponse.data.image || "", // Properti gambar
         });
 
         setRoles(rolesResponse.data.roles || []);
@@ -87,11 +91,13 @@ function EditProfile() {
     fetchProfileAndRoles();
   }, []);
 
+  // Fungsi untuk memperbarui input
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  // Fungsi untuk memperbarui profil
   const handleUpdateProfile = async () => {
     const token = Cookies.get("login");
 
@@ -141,7 +147,19 @@ function EditProfile() {
     }
   };
 
+  // Fungsi untuk mengunggah gambar
   const handleUploadImage = () => {
+    const token = Cookies.get("login");
+
+    if (!token) {
+      Swal.fire({
+        icon: "error",
+        title: "Authentication Error",
+        text: "Authentication token is missing! Please log in again.",
+      });
+      return;
+    }
+
     Swal.fire({
       title: "Upload Profile Image",
       input: "file",
@@ -172,10 +190,10 @@ function EditProfile() {
             }
           )
           .then((response) => {
-            if (!response.data) {
-              throw new Error(response.statusText);
+            if (!response.data || !response.data.image_url) {
+              throw new Error("Failed to get image URL from server");
             }
-            return response.data;
+            return response.data.image_url; // Ambil URL gambar dari respons
           })
           .catch((error) => {
             console.error("Error uploading image:", error);
@@ -187,161 +205,103 @@ function EditProfile() {
       allowOutsideClick: () => !Swal.isLoading(),
     }).then((result) => {
       if (result.isConfirmed) {
+        const uploadedImageUrl = result.value; // URL gambar yang diunggah
+        setFormData((prevData) => ({
+          ...prevData,
+          image: uploadedImageUrl, // Perbarui state dengan URL baru
+        }));
+
         Swal.fire({
           icon: "success",
           title: "Image Uploaded",
           text: "Your profile image has been updated successfully.",
         });
-
-        // Refresh the profile data to reflect the updated image
-        setProfileData((prevData) => ({
-          ...prevData,
-          image: URL.createObjectURL(result.value),
-        }));
       }
     });
   };
+
   return (
-      <div className="edit-profile-container">
-        {error && <p>{error}</p>}
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
-          <>
-            <div className="edit-profile-grid">
-              {/* Kolom Gambar */}
-              <div className="profile-image">
-                <img
-                  src="https://via.placeholder.com/120"
-                  alt="Default Profile"
+    <div className="edit-profile-container">
+      {error && <p>{error}</p>}
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <div className="edit-profile-grid">
+          <div className="profile-image">
+            <img
+              src={formData.image || "https://via.placeholder.com/120"}
+              alt="Profile"
+              onError={(e) =>
+                (e.target.src = "https://via.placeholder.com/120")
+              }
+            />
+          </div>
+          <div className="profile-inputs">
+            <div className="form-row">
+              <div className="form-group">
+                <label>Name</label>
+                <input
+                  type="text"
+                  name="nama"
+                  value={formData.nama}
+                  onChange={handleInputChange}
                 />
               </div>
-
-              {/* Kolom Input */}
-              <div className="profile-inputs">
-                {/* Baris 1 */}
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Name</label>
-                    <input
-                      type="text"
-                      name="nama"
-                      value={formData.nama}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Phone Number</label>
-                    <input
-                      type="text"
-                      name="no_telp"
-                      value={formData.no_telp}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                </div>
-
-                {/* Baris 2 */}
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Email</label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Role</label>
-                    <select
-                      name="id_role"
-                      value={formData.id_role}
-                      onChange={handleInputChange}
-                    >
-                      <option value="">Select a Role</option>
-                      {roles.map((role) => (
-                        <option key={role.id} value={role.id}>
-                          {role.name_role}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                {/* Baris 3 */}
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Street</label>
-                    <input
-                      type="text"
-                      name="street"
-                      value={formData.street}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>City</label>
-                    <input
-                      type="text"
-                      name="city"
-                      value={formData.city}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                </div>
-
-                {/* Baris 4 */}
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>State</label>
-                    <input
-                      type="text"
-                      name="state"
-                      value={formData.state}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Postal Code</label>
-                    <input
-                      type="text"
-                      name="postal_code"
-                      value={formData.postal_code}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                </div>
-
-                {/* Baris 5 */}
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Country</label>
-                    <input
-                      type="text"
-                      name="country"
-                      value={formData.country}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                </div>
-              </div>
-              {/* Tombol Upload dan Save */}
-              <div className="upload-buttons">
-                <button className="upload-image" onClick={handleUploadImage}>
-                  Upload Image
-                </button>
-              </div>
-              <div className="edit-profile-container">
-                <Link to="/dashboard/profile" className="edit-profile">
-                  Back to Profile
-                </Link>
-                <button className="edit-profile" onClick={handleUpdateProfile}>Save Profile</button>
+              <div className="form-group">
+                <label>Phone Number</label>
+                <input
+                  type="text"
+                  name="no_telp"
+                  value={formData.no_telp}
+                  onChange={handleInputChange}
+                />
               </div>
             </div>
-          </>
-        )}
-      </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label>Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="form-group">
+                <label>Role</label>
+                <select
+                  name="id_role"
+                  value={formData.id_role}
+                  onChange={handleInputChange}
+                >
+                  <option value="">Select a Role</option>
+                  {roles.map((role) => (
+                    <option key={role.id} value={role.id}>
+                      {role.name_role}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div className="upload-buttons">
+            <button className="upload-image" onClick={handleUploadImage}>
+              Upload Image
+            </button>
+          </div>
+          <div className="edit-profile-container">
+            <Link to="/dashboard/profile" className="edit-profile">
+              Back to Profile
+            </Link>
+            <button className="edit-profile" onClick={handleUpdateProfile}>
+              Save Profile
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 

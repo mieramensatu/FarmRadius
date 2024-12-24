@@ -137,7 +137,7 @@ function ProfileAdmin() {
             </div>
 
             <div className="edit-profile-container">
-              <Link to="/edit-profile" className="edit-profile">
+              <Link to="/dashboard/edit-profile" className="edit-profile">
                 <p>Edit Profile</p>
               </Link>
             </div>

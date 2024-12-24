@@ -12,11 +12,11 @@ function Productsection() {
     const fetchProducts = async () => {
       try {
         const response = await fetch(
-          "https://farmdistribution-40a43a4491b1.herokuapp.com/product/mine",
+          "https://farmdistribution-40a43a4491b1.herokuapp.com/product",
           {
             method: "GET",
             headers: {
-              login: token,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
@@ -26,7 +26,7 @@ function Productsection() {
         }
 
         const data = await response.json();
-        setProducts(data.data); // Simpan data produk ke state
+        setProducts(data.data);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -53,10 +53,9 @@ function Productsection() {
                 />
                 <div className="product-info">
                   <h3 className="product-name">{product.name || "Produk Tidak Diketahui"}</h3>
-                  <p className="product-price">Rp {product.price ? product.price.toLocaleString() : "0"}</p>
-                  <p className="product-sold">
-                    ⭐ {product.rating || "0.0"} | {product.sold || "0"} terjual
-                  </p>
+                  <p className="product-price">Rp {product.price_per_kg ? product.price_per_kg.toLocaleString() : "0"}/kg</p>
+                  <p className="product-stock">Stok: {product.stock_kg || 0} kg</p>
+                  <p className="product-status">Status: {product.status_name || "N/A"}</p>
                 </div>
               </div>
             ))}

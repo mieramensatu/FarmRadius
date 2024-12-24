@@ -1,19 +1,19 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Cookies from "js-cookie";
 import Dashboard from "../../Dashboard";
-import Swal from "sweetalert2"; // Import SweetAlert2
-import "./_add.scss"; // Import SCSS untuk styling (jika diperlukan)
+import Swal from "sweetalert2";
+import "./_edit.scss";
 
-// Fungsi untuk memformat tanggal ke format dd/Month/yy
-const formatDate = (date) => {
+// Fungsi untuk memformat tanggal ke format yang diharapkan server (dd/Month/yy)
+const formatDateForServer = (date) => {
   const options = { day: "2-digit", month: "long", year: "2-digit" };
   return new Intl.DateTimeFormat("en-GB", options)
     .format(new Date(date))
     .replace(/ /g, "/");
 };
 
-function AddProduct() {
+function UpdateProduct() {
   const [productData, setProductData] = useState({
     product_name: "",
     description: "",
@@ -27,7 +27,71 @@ function AddProduct() {
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { id } = useParams();
 
+  // Fetch detail produk berdasarkan ID
+  useEffect(() => {
+    const token = Cookies.get("login");
+
+    const fetchProductDetails = async () => {
+      try {
+        const response = await fetch(
+          `https://farmdistribution-40a43a4491b1.herokuapp.com/product`,
+          {
+            method: "GET",
+            headers: {
+              login: token,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch product details");
+        }
+
+        const result = await response.json();
+
+        // Filter produk berdasarkan ID
+        const filteredProduct = result.data.find(
+          (product) => product.id === Number(id)
+        );
+
+        if (filteredProduct) {
+          setProductData({
+            product_name: filteredProduct.name || "",
+            description: filteredProduct.description || "",
+            price_per_kg: filteredProduct.price_per_kg || "",
+            weight_per_kg: filteredProduct.weight_per_unit || "",
+            stock_kg: filteredProduct.stock_kg || "",
+            status_name: filteredProduct.status_name || "Tersedia",
+            available_date: filteredProduct.available_date
+              ? new Date(filteredProduct.available_date)
+                  .toISOString()
+                  .slice(0, 16)
+              : "",
+          });
+        } else {
+          console.error("Product not found!");
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Product not found!",
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching product details:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to fetch product details.",
+        });
+      }
+    };
+
+    fetchProductDetails();
+  }, [id]);
+
+  // Handle perubahan input
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProductData({
@@ -36,10 +100,12 @@ function AddProduct() {
     });
   };
 
+  // Handle perubahan gambar
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
   };
 
+  // Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -48,9 +114,8 @@ function AddProduct() {
     const formData = new FormData();
 
     // Format tanggal sebelum ditambahkan ke FormData
-    const formattedDate = formatDate(productData.available_date);
+    const formattedDate = formatDateForServer(productData.available_date);
 
-    // Append form data
     for (const key in productData) {
       if (key === "available_date") {
         formData.append(key, formattedDate);
@@ -59,16 +124,15 @@ function AddProduct() {
       }
     }
 
-    // Append image file
     if (image) {
       formData.append("image", image);
     }
 
     try {
       const response = await fetch(
-        "https://farmdistribution-40a43a4491b1.herokuapp.com/add/product",
+        `https://farmdistribution-40a43a4491b1.herokuapp.com/product/edit?id=${id}`,
         {
-          method: "POST",
+          method: "PUT",
           headers: {
             login: token,
           },
@@ -81,25 +145,24 @@ function AddProduct() {
       if (response.ok) {
         Swal.fire({
           icon: "success",
-          title: "Product Added",
-          text: "The product has been added successfully!",
-          confirmButtonText: "OK",
+          title: "Product Updated",
+          text: "The product has been updated successfully!",
         }).then(() => {
-          navigate("/dashboard/product"); // Navigate back to product list
+          navigate("/dashboard/product");
         });
       } else {
         Swal.fire({
           icon: "error",
-          title: "Failed to Add Product",
-          text: result.message || "An error occurred while adding the product.",
+          title: "Update Failed",
+          text: result.message || "Failed to update product.",
         });
       }
     } catch (error) {
-      console.error("Error adding product:", error);
+      console.error("Error updating product:", error);
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "An error occurred while adding the product.",
+        text: "An error occurred while updating the product.",
       });
     } finally {
       setLoading(false);
@@ -109,7 +172,7 @@ function AddProduct() {
   return (
     <Dashboard>
       <div className="add-product-container">
-        <h1>Add Product</h1>
+        <h1>Update Product</h1>
         <form className="add-product-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="product_name">Product Name</label>
@@ -197,12 +260,11 @@ function AddProduct() {
               name="image"
               onChange={handleImageChange}
               accept="image/*"
-              required
             />
           </div>
           <div className="form-group">
             <button type="submit" disabled={loading}>
-              {loading ? "Adding Product..." : "Add Product"}
+              {loading ? "Updating Product..." : "Update Product"}
             </button>
           </div>
         </form>
@@ -211,4 +273,4 @@ function AddProduct() {
   );
 }
 
-export default AddProduct;
+export default UpdateProduct;

@@ -11,6 +11,8 @@ function Profile() {
   const [error, setError] = useState(null); // Store error if any
 
   useEffect(() => {
+    const token = Cookies.get("login"); // Ambil token di awal
+
     if (!token) {
       console.error("Token is missing!");
       setError("You are not authenticated. Please log in.");
@@ -21,7 +23,7 @@ function Profile() {
       .get("https://farmdistribution-40a43a4491b1.herokuapp.com/profile", {
         headers: {
           "Content-Type": "application/json",
-          login: token,
+          login: token, // Gunakan token di sini
         },
       })
       .then((res) => {
@@ -32,9 +34,20 @@ function Profile() {
         console.error("Error fetching profile:", err);
         setError("Failed to fetch profile data.");
       });
-  }, [token]);
+  }, []);
 
   const handleUploadImage = () => {
+    const token = Cookies.get("login"); // Ambil token di awal
+
+    if (!token) {
+      Swal.fire({
+        icon: "error",
+        title: "Authentication Error",
+        text: "Authentication token is missing! Please log in again.",
+      });
+      return;
+    }
+
     Swal.fire({
       title: "Upload Profile Image",
       input: "file",
@@ -68,11 +81,13 @@ function Profile() {
             if (!response.data) {
               throw new Error(response.statusText);
             }
-            return response.data;
+            return file; // Kembalikan file yang diunggah
           })
           .catch((error) => {
             console.error("Error uploading image:", error);
-            Swal.showValidationMessage("Failed to upload image. Please try again.");
+            Swal.showValidationMessage(
+              "Failed to upload image. Please try again."
+            );
           });
       },
       allowOutsideClick: () => !Swal.isLoading(),
@@ -84,11 +99,13 @@ function Profile() {
           text: "Your profile image has been updated successfully.",
         });
 
-        // Refresh the profile data to reflect the updated image
-        setProfileData((prevData) => ({
-          ...prevData,
-          image: URL.createObjectURL(result.value),
-        }));
+        // Refresh profile data dengan URL dari server, jika tersedia
+        if (result.value) {
+          setProfileData((prevData) => ({
+            ...prevData,
+            image: URL.createObjectURL(result.value), // Jika file berhasil
+          }));
+        }
       }
     });
   };
@@ -102,49 +119,49 @@ function Profile() {
   }
 
   return (
-      <div className="profile-container">
-        <div className="profile-card">
-          <div className="profile-picture">
-            <img
-              src={profileData.image || "https://via.placeholder.com/120"}
-              alt="Profile"
-            />
-          </div>
+    <div className="profile-container">
+      <div className="profile-card">
+        <div className="profile-picture">
+          <img
+            src={profileData.image || "https://via.placeholder.com/120"}
+            alt="Profile"
+          />
+        </div>
 
-          <div className="profile-details">
-            <p>
-              <strong>Name:</strong> {profileData.nama || "N/A"}
-            </p>
-            <p>
-              <strong>Email:</strong> {profileData.email || "N/A"}
-            </p>
-            <p>
-              <strong>Phone Number:</strong> {profileData.no_telp || "N/A"}
-            </p>
-            <p>
-              <strong>Role:</strong> {profileData.role_name || "N/A"}
-            </p>
-            <p>
-              <strong>Address:</strong>{" "}
-              {profileData.address
-                ? `${profileData.address.street}, ${profileData.address.city}, ${profileData.address.state}, ${profileData.address.postal_code}, ${profileData.address.country}`
-                : "N/A"}
-            </p>
-          </div>
+        <div className="profile-details">
+          <p>
+            <strong>Name:</strong> {profileData.nama || "N/A"}
+          </p>
+          <p>
+            <strong>Email:</strong> {profileData.email || "N/A"}
+          </p>
+          <p>
+            <strong>Phone Number:</strong> {profileData.no_telp || "N/A"}
+          </p>
+          <p>
+            <strong>Role:</strong> {profileData.role_name || "N/A"}
+          </p>
+          <p>
+            <strong>Address:</strong>{" "}
+            {profileData.address
+              ? `${profileData.address.street}, ${profileData.address.city}, ${profileData.address.state}, ${profileData.address.postal_code}, ${profileData.address.country}`
+              : "N/A"}
+          </p>
+        </div>
 
-          <div className="upload-buttons">
-            <button className="upload-image" onClick={handleUploadImage}>
-              <p>Edit foto</p>
-            </button>
-          </div>
+        <div className="upload-buttons">
+          <button className="upload-image" onClick={handleUploadImage}>
+            <p>Edit foto</p>
+          </button>
+        </div>
 
-          <div className="edit-profile-container">
-            <Link to="edit" className="edit-profile">
-              <i className="fa fa-edit"></i> Edit Profile
-            </Link>
-          </div>
+        <div className="edit-profile-container">
+          <Link to="edit" className="edit-profile">
+            <i className="fa fa-edit"></i> Edit Profile
+          </Link>
         </div>
       </div>
+    </div>
   );
 }
 

@@ -7,14 +7,14 @@ const containerStyle = {
 }
 
 const center = {
-  lat: -3.745,
-  lng: -38.523,
+  lat: -6.87387106150724,
+  lng: 107.5754129672757,
 }
 
 function MyComponent() {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: 'YOUR_API_KEY',
+    googleMapsApiKey: 'AIzaSyBDj4kQmNd0B4mTAEMl8O6aH87VDartChc', 
   })
 
   const [map, setMap] = React.useState(null)

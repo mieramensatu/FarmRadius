@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import "./_editprofile.scss";
 import { Link } from "react-router-dom";
 
-function EditProfile() {
+function EditProfileAdmin() {
   const [formData, setFormData] = useState({
     nama: "",
     no_telp: "",
@@ -17,6 +17,7 @@ function EditProfile() {
     state: "",
     postal_code: "",
     country: "",
+    image: "",
   });
 
   const [roles, setRoles] = useState([]);
@@ -69,6 +70,7 @@ function EditProfile() {
           state: profileResponse.data.address?.state || "",
           postal_code: profileResponse.data.address?.postal_code || "",
           country: profileResponse.data.address?.country || "",
+          image: profileResponse.data.image || "", // Properti gambar
         });
 
         setRoles(rolesResponse.data.roles || []);
@@ -173,10 +175,10 @@ function EditProfile() {
             }
           )
           .then((response) => {
-            if (!response.data) {
-              throw new Error(response.statusText);
+            if (!response.data || !response.data.image_url) {
+              throw new Error("Failed to get image URL from server");
             }
-            return response.data;
+            return response.data.image_url; // Ambil URL gambar dari respons
           })
           .catch((error) => {
             console.error("Error uploading image:", error);
@@ -188,17 +190,16 @@ function EditProfile() {
       allowOutsideClick: () => !Swal.isLoading(),
     }).then((result) => {
       if (result.isConfirmed) {
+        setFormData((prevData) => ({
+          ...prevData,
+          image: result.value, // Perbarui URL gambar
+        }));
+
         Swal.fire({
           icon: "success",
           title: "Image Uploaded",
           text: "Your profile image has been updated successfully.",
         });
-
-        // Refresh the profile data to reflect the updated image
-        setProfileData((prevData) => ({
-          ...prevData,
-          image: URL.createObjectURL(result.value),
-        }));
       }
     });
   };
@@ -214,8 +215,11 @@ function EditProfile() {
               {/* Kolom Gambar */}
               <div className="profile-image">
                 <img
-                  src="https://via.placeholder.com/120"
-                  alt="Default Profile"
+                  src={formData.image || "https://via.placeholder.com/120"}
+                  alt="Profile"
+                  onError={(e) =>
+                    (e.target.src = "https://via.placeholder.com/120")
+                  }
                 />
               </div>
 
@@ -338,7 +342,9 @@ function EditProfile() {
                 <Link to="/dashboard/profile" className="edit-profile">
                   Back to Profile
                 </Link>
-                <button className="edit-profile" onClick={handleUpdateProfile}>Save Profile</button>
+                <button className="edit-profile" onClick={handleUpdateProfile}>
+                  Save Profile
+                </button>
               </div>
             </div>
           </>
@@ -348,4 +354,4 @@ function EditProfile() {
   );
 }
 
-export default EditProfile;
+export default EditProfileAdmin;

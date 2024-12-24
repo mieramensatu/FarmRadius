@@ -44,17 +44,9 @@ function Sidebar() {
             <i className="ph ph-storefront"></i>
             <span>Product</span>
           </Link>
-          <Link to="/management-order" data-menu="management-order" className="menu-item">
-            <i className="ph ph-shopping-cart"></i>
-            <span>Order</span>
-          </Link>
-          <Link to="/map" data-menu="map" className="menu-item">
-            <i className="ph ph-map-pin-area"></i>
-            <span>Map</span>
-          </Link>
-          <Link className="logout" onClick={handleLogout}>
-            <i className="ph ph-sign-out"></i>
-            <span>Logout</span>
+          <Link to="/dashboard/user" data-menu="user" className="menu-item">
+            <i className="ph ph-user"></i>
+            <span>User</span>
           </Link>
         </div>
       </aside>
