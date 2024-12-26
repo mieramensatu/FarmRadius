@@ -15,6 +15,7 @@ import EditProfileAdmin from "./pages/Admin/EditProfile/EditProfile"
 import Profileuser from "./pages/ProfileUser/Profile/Profile";
 import UpdateProduct from "./pages/Admin/Product/EditProduct/Edit";
 import AllUser from "./pages/Admin/User/AllUser/user";
+import Auth from "./pages/auth/auth";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -24,6 +25,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/" element={<Landingpage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Register />} />
+        <Route path="/auth" element={<Auth />} />
         <Route path="/product" element={<ProductComponent />} />
 
         {/* Profile Routes */}

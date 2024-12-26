@@ -1,0 +1,57 @@
+.update-role-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+  
+    h1 {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 30px;
+      color: #333;
+    }
+  
+    .button-container {
+      display: flex;
+      gap: 20px;
+  
+      .role-button {
+        padding: 15px 30px;
+        font-size: 18px;
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: transform 0.2s, background-color 0.3s;
+  
+        // Button for Pembeli
+        &.Pembeli {
+          background-color: #4caf50;
+          color: white;
+  
+          &:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+          }
+        }
+  
+        // Button for Penjual
+        &.Penjual {
+          background-color: #2196f3;
+          color: white;
+  
+          &:hover {
+            background-color: #1976d2;
+            transform: scale(1.05);
+          }
+        }
+  
+        &:active {
+          transform: scale(1);
+        }
+      }
+    }
+  }
+  
