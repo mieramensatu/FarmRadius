@@ -4,6 +4,7 @@ import "./_productsection.scss"; // Import file SCSS untuk styling
 
 function Productsection() {
   const [products, setProducts] = useState([]);
+  const [cart, setCart] = useState([]); // State untuk menyimpan produk yang dipesan
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -37,6 +38,18 @@ function Productsection() {
     fetchProducts();
   }, []);
 
+  // Fungsi untuk menambahkan produk ke keranjang (cart)
+  const handleAddToCart = (product) => {
+    setCart((prevCart) => [...prevCart, product]);
+    alert(`${product.name} berhasil ditambahkan ke pesanan!`);
+  };
+
+  // Fungsi untuk checkout
+  const handleCheckout = () => {
+    alert(`Produk yang dipesan:\n${cart.map((item) => item.name).join(", ")}`);
+    console.log("Produk yang akan dipesan:", cart);
+  };
+
   return (
     <div className="product">
       <div className="product-list">
@@ -56,10 +69,37 @@ function Productsection() {
                   <p className="product-price">Rp {product.price_per_kg ? product.price_per_kg.toLocaleString() : "0"}/kg</p>
                   <p className="product-stock">Stok: {product.stock_kg || 0} kg</p>
                   <p className="product-status">Status: {product.status_name || "N/A"}</p>
+                  <button
+                    className="order-button"
+                    onClick={() => handleAddToCart(product)}
+                  >
+                    Pesan
+                  </button>
                 </div>
               </div>
             ))}
           </div>
+        )}
+      </div>
+
+      {/* Checkout Section */}
+      <div className="checkout-section">
+        <h2>Checkout</h2>
+        {cart.length === 0 ? (
+          <p>Belum ada produk yang dipesan.</p>
+        ) : (
+          <ul>
+            {cart.map((item, index) => (
+              <li key={index}>
+                {item.name} - Rp {item.price_per_kg.toLocaleString()}/kg
+              </li>
+            ))}
+          </ul>
+        )}
+        {cart.length > 0 && (
+          <button className="checkout-button" onClick={handleCheckout}>
+            Lanjut ke Pembayaran
+          </button>
         )}
       </div>
     </div>

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Dashboard from "../../Dashboard";
 import Cookies from "js-cookie";
 import Swal from "sweetalert2";
-import "./_user.scss"; // SCSS styling
+import "./_user.scss";
 
 function AllUser() {
   const [users, setUsers] = useState([]);
@@ -14,156 +14,186 @@ function AllUser() {
   useEffect(() => {
     const token = Cookies.get("login");
 
-    // Fetch Users
+    // Fetch users
     const fetchUsers = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:8080/profile/all",
-          {
-            method: "GET",
-            headers: {
-              login: token,
-            },
-          }
-        );
+        const userResponse = await fetch("http://localhost:8080/all/akun", {
+          method: "GET",
+          headers: {
+            login: token,
+          },
+        });
 
-        if (!response.ok) throw new Error("Failed to fetch users");
+        if (!userResponse.ok) {
+          throw new Error("Failed to fetch users");
+        }
 
-        const data = await response.json();
-        setUsers(data.data);
-        setLoading(false);
+        const userData = await userResponse.json();
+        setUsers(userData.users);
       } catch (error) {
         console.error("Error fetching users:", error);
-        setLoading(false);
       }
     };
 
-    // Fetch Roles
+    // Fetch roles
     const fetchRoles = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:8080/role",
-          {
-            method: "GET",
-            headers: {
-              login: token,
-            },
-          }
-        );
+        const roleResponse = await fetch("http://localhost:8080/role", {
+          method: "GET",
+        });
 
-        if (!response.ok) throw new Error("Failed to fetch roles");
+        if (!roleResponse.ok) {
+          throw new Error("Failed to fetch roles");
+        }
 
-        const data = await response.json();
-        setRoles(data.roles); // Update sesuai dengan struktur API role
+        const roleData = await roleResponse.json();
+        setRoles(roleData.roles);
       } catch (error) {
         console.error("Error fetching roles:", error);
       }
     };
 
-    fetchUsers();
-    fetchRoles();
+    // Fetch users and roles
+    Promise.all([fetchUsers(), fetchRoles()]).then(() => setLoading(false));
   }, []);
 
-  const handleEditRole = async (id) => {
+  // Get role name by id_role
+  const getRoleName = (id_role) => {
+    const role = roles.find((r) => r.id === id_role);
+    return role ? role.name_role : "Unknown";
+  };
+
+  // Update user role
+  const handleUpdateRole = async (user) => {
     const token = Cookies.get("login");
 
-    const selectedUser = users.find((user) => user.id_user === id);
-
-    Swal.fire({
-      title: `Edit Role for ${selectedUser.nama}`,
+    // Show role selection dialog
+    const { value: selectedRoleId } = await Swal.fire({
+      title: "Update Role",
       input: "select",
-      inputOptions: roles.reduce((acc, role) => {
-        acc[role.name_role] = role.name_role; // Perbaikan sesuai dengan API role
-        return acc;
+      inputOptions: roles.reduce((options, role) => {
+        options[role.id] = role.name_role;
+        return options;
       }, {}),
       inputPlaceholder: "Select a new role",
       showCancelButton: true,
-      confirmButtonText: "Update",
-    }).then(async (result) => {
-      if (result.isConfirmed && result.value) {
-        try {
-          const response = await fetch(
-            `http://localhost:8080/profile/by-id?id=${id}`,
-            {
-              method: "PUT",
-              headers: {
-                login: token,
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                role_name: result.value,
-              }),
-            }
-          );
+    });
 
-          if (!response.ok) throw new Error("Failed to update role");
+    if (selectedRoleId) {
+      try {
+        console.log("Selected Role ID:", selectedRoleId);
 
+        // Build payload with updated id_role and other user data
+        const payload = {
+          nama: user.nama,
+          no_telp: user.no_telp,
+          email: user.email,
+          id_role: parseInt(selectedRoleId),
+        };
+
+        const response = await fetch(
+          `http://localhost:8080/update/akun?id=${user.id_user}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              login: token,
+            },
+            body: JSON.stringify(payload),
+          }
+        );
+
+        console.log("Request Payload:", payload);
+        console.log("Response Status:", response.status);
+
+        if (response.ok) {
+          const updatedRole = getRoleName(parseInt(selectedRoleId));
           Swal.fire({
             icon: "success",
             title: "Role Updated",
-            text: `Role has been updated to ${result.value} for ${selectedUser.nama}`,
+            text: `User role has been updated to ${updatedRole}.`,
           });
 
-          // Refresh the users list
-          const updatedUsers = users.map((user) =>
-            user.id_user === id ? { ...user, role_name: result.value } : user
+          // Update state users
+          setUsers((prevUsers) =>
+            prevUsers.map((u) =>
+              u.id_user === user.id_user
+                ? { ...u, id_role: parseInt(selectedRoleId) }
+                : u
+            )
           );
-          setUsers(updatedUsers);
-        } catch (error) {
-          console.error("Error updating role:", error);
+        } else {
+          const result = await response.json();
           Swal.fire({
             icon: "error",
-            title: "Failed to Update Role",
-            text: "An error occurred while updating the role.",
+            title: "Failed to Update",
+            text: result.message || "An error occurred.",
           });
         }
+      } catch (error) {
+        console.error("Error updating role:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "An error occurred while updating the role.",
+        });
       }
-    });
+    }
   };
 
-  const handleDeleteUser = async (id) => {
+  // Delete user account
+  const handleDeleteAccount = async (user) => {
     const token = Cookies.get("login");
 
-    Swal.fire({
+    const confirmation = await Swal.fire({
       title: "Are you sure?",
-      text: "This action cannot be undone!",
+      text: `You are about to delete the account of ${user.nama}. This action cannot be undone!`,
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, delete it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          const response = await fetch(
-            `http://localhost:8080/profile/delete?id=${id}`,
-            {
-              method: "DELETE",
-              headers: {
-                login: token,
-              },
-            }
-          );
+      cancelButtonText: "No, cancel!",
+    });
 
-          if (!response.ok) throw new Error("Failed to delete user");
+    if (confirmation.isConfirmed) {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/delete/akun?id=${user.id_user}`,
+          {
+            method: "DELETE",
+            headers: {
+              login: token,
+            },
+          }
+        );
 
+        if (response.ok) {
           Swal.fire({
             icon: "success",
-            title: "Deleted!",
-            text: "The user has been deleted.",
+            title: "Account Deleted",
+            text: `The account of ${user.nama} has been deleted.`,
           });
 
-          setUsers(users.filter((user) => user.id_user !== id));
-        } catch (error) {
-          console.error("Error deleting user:", error);
+          // Remove user from state
+          setUsers((prevUsers) =>
+            prevUsers.filter((u) => u.id_user !== user.id_user)
+          );
+        } else {
+          const result = await response.json();
           Swal.fire({
             icon: "error",
-            title: "Failed to Delete User",
-            text: "An error occurred while deleting the user.",
+            title: "Failed to Delete",
+            text: result.message || "An error occurred.",
           });
         }
+      } catch (error) {
+        console.error("Error deleting account:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "An error occurred while deleting the account.",
+        });
       }
-    });
+    }
   };
 
   return (
@@ -193,19 +223,19 @@ function AllUser() {
                   <td>{user.nama}</td>
                   <td>{user.email}</td>
                   <td>{user.no_telp}</td>
-                  <td>{user.role_name}</td>
+                  <td>{getRoleName(user.id_role)}</td>
                   <td>
                     <button
-                      className="edit-button"
-                      onClick={() => handleEditRole(user.id_user)}
+                      className="update-button"
+                      onClick={() => handleUpdateRole(user)}
                     >
-                      Edit Role
+                      Update Role
                     </button>
                     <button
                       className="delete-button"
-                      onClick={() => handleDeleteUser(user.id_user)}
+                      onClick={() => handleDeleteAccount(user)}
                     >
-                      Delete
+                      Delete Account
                     </button>
                   </td>
                 </tr>

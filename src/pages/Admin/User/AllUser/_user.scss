@@ -1,5 +1,6 @@
 .user-list-container {
-  padding: 20px;
+  padding: 0 20px;
+  border-radius: 8px;
 
   .header {
     display: flex;
@@ -10,6 +11,7 @@
     h1 {
       font-size: 24px;
       margin: 0;
+      color: #333333;
     }
   }
 
@@ -22,54 +24,88 @@
     td {
       text-align: left;
       padding: 12px;
+      font-size: 14px;
     }
 
     th {
-      background-color: #f9f9f9;
-      color: #333;
+      background-color: #f1f5f9;
+      color: #333333;
       font-weight: bold;
       border-bottom: 2px solid #e0e0e0;
     }
 
     td {
       border-bottom: 1px solid #e0e0e0;
-      color: #555;
+      color: #555555;
     }
 
     tbody tr {
       transition: background-color 0.3s;
 
       &:hover {
-        background-color: #f5f5f5;
+        background-color: #f8fafc;
+      }
+    }
+
+    .update-button,
+    .delete-button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 25px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-right: 5px;
+
+      &.update-button {
+        background: linear-gradient(90deg, #4caf50, #81c784);
+        color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+        &:hover {
+          background: linear-gradient(90deg, #388e3c, #66bb6a);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+      }
+
+      &.delete-button {
+        background: linear-gradient(90deg, #f44336, #e57373);
+        color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+        &:hover {
+          background: linear-gradient(90deg, #d32f2f, #ef5350);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+      }
+    }
+  }
+
+  // Responsivitas untuk layar kecil
+  @media (max-width: 768px) {
+    .header {
+      flex-direction: column;
+      align-items: flex-start;
+
+      h1 {
+        margin-bottom: 10px;
+      }
+    }
+
+    .user-table {
+      th,
+      td {
+        font-size: 12px;
+        padding: 8px;
       }
     }
 
     .edit-button,
     .delete-button {
-      padding: 5px 10px;
-      border: none;
-      border-radius: 4px;
-      font-size: 12px;
-      cursor: pointer;
-      margin-right: 5px;
-
-      &.edit-button {
-        background-color: #ff9800;
-        color: white;
-
-        &:hover {
-          background-color: #e68900;
-        }
-      }
-
-      &.delete-button {
-        background-color: #f44336;
-        color: white;
-
-        &:hover {
-          background-color: #d32f2f;
-        }
-      }
+      width: 100%;
+      text-align: center;
+      margin-bottom: 8px;
     }
   }
 }
