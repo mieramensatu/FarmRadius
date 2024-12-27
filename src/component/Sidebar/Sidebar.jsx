@@ -29,7 +29,7 @@ function Sidebar() {
       <aside className="navigation">
         <div className="navigation-logo">
           <Link to="/" className="nav-logo">
-            <img src={Logo} alt="GoBiz Logo" />
+            <img src={Logo} alt="FarmRadius Logo" />
             <span>FarmRadius</span>
           </Link>
           <span className="material-symbols-outlined">left_panel_close</span>
@@ -48,6 +48,12 @@ function Sidebar() {
             <i className="ph ph-user"></i>
             <span>User</span>
           </Link>
+        </div>
+        <div className="navigation-footer">
+          <button className="menu-item logout-button" onClick={handleLogout}>
+            <i className="ph ph-sign-out"></i>
+            <span>Logout</span>
+          </button>
         </div>
       </aside>
     </>
