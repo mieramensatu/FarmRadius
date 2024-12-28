@@ -1,148 +1,122 @@
-.product {
-  padding: 20px;
+@use "../../../helper/mixins" as m;
+@use "../../../helper/variables" as v;
 
-  .product-header {
-    margin-bottom: 20px;
-    text-align: center;
+.listing-product {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 20px;
+  padding: 0 v.$padding-horizontal-main;
+  width: 100%;
+  box-sizing: border-box;
+}
 
-    h1 {
-      font-size: 24px;
-      color: #333;
-    }
+.product-card {
+  width: 100%; /* Pastikan elemen mengisi kolom grid */
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  text-align: center;
+  padding: 10px;
+  box-sizing: border-box; /* Pastikan padding tidak memengaruhi lebar elemen */
+  transition: transform 0.3s;
+
+  &:hover {
+    transform: translateY(-5px);
   }
 
-  .product-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-    }
-
-    .product-card {
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-      text-align: center;
-      transition: transform 0.3s;
-
-      &:hover {
-        transform: translateY(-5px);
-      }
-
-      .product-image {
-        width: 100%;
-        height: 150px;
-        object-fit: cover;
-      }
-
-      .product-info {
-        padding: 10px;
-
-        .product-name {
-          font-size: 16px;
-          font-weight: bold;
-          margin-bottom: 5px;
-        }
-
-        .product-price {
-          color: #28a745;
-          font-weight: bold;
-          margin-bottom: 5px;
-        }
-
-        .product-stock {
-          font-size: 14px;
-          color: #6c757d;
-          margin-bottom: 10px;
-        }
-
-        .product-status {
-          font-size: 14px;
-          color: #007bff;
-          margin-bottom: 10px;
-        }
-
-        .order-button {
-          display: inline-block;
-          padding: 10px 20px;
-          border: none;
-          background: #007bff;
-          color: white;
-          border-radius: 4px;
-          font-size: 14px;
-          cursor: pointer;
-          transition: background-color 0.3s;
-
-          &:hover {
-            background-color: #0056b3;
-          }
-        }
-      }
-    }
+  .product-image {
+    width: 100%; /* Gambar mengikuti lebar parent */
+    aspect-ratio: 1 / 1; /* Proporsi kotak 1:1 */
+    object-fit: cover; /* Gambar di-crop agar mengisi kotak dengan proporsional */
+    border-radius: 8px; /* Opsional, membuat gambar melengkung di sudut */
   }
 
-  .checkout-section {
-    margin-top: 30px;
-    padding: 20px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    background: #f9f9f9;
+  .product-info {
+    padding: 10px;
 
-    h2 {
-      font-size: 20px;
-      color: #333;
-      margin-bottom: 15px;
-    }
-
-    ul {
-      list-style-type: none;
-      padding: 0;
-      margin-bottom: 20px;
-
-      li {
-        margin-bottom: 10px;
-        font-size: 14px;
-        color: #555;
-      }
-    }
-
-    .checkout-button {
-      display: inline-block;
-      padding: 12px 20px;
-      background: linear-gradient(90deg, #28a745, #81c784);
-      color: white;
-      border: none;
-      border-radius: 4px;
+    .product-name {
       font-size: 16px;
       font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .product-price {
+      color: #28a745;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .product-stock {
+      font-size: 14px;
+      color: #6c757d;
+      margin-bottom: 10px;
+    }
+
+    .product-status {
+      font-size: 14px;
+      color: #007bff;
+      margin-bottom: 10px;
+    }
+
+    .order-button {
+      display: inline-block;
+      padding: 10px 20px;
+      border: none;
+      background: #007bff;
+      color: white;
+      border-radius: 4px;
+      font-size: 14px;
       cursor: pointer;
       transition: background-color 0.3s;
 
       &:hover {
-        background: linear-gradient(90deg, #218838, #66bb6a);
+        background-color: #0056b3;
       }
     }
   }
+}
 
-  @media (max-width: 768px) {
-    .product-grid {
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+.checkout-section {
+  grid-column: 1 / -1; /* Membentang penuh di bawah grid */
+  margin-top: 30px;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #f9f9f9;
+
+  h2 {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 15px;
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 20px;
+
+    li {
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #555;
     }
+  }
 
-    .checkout-section {
-      h2 {
-        font-size: 18px;
-      }
+  .checkout-button {
+    display: inline-block;
+    padding: 12px 20px;
+    background: linear-gradient(90deg, #28a745, #81c784);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
 
-      .checkout-button {
-        width: 100%;
-        text-align: center;
-      }
+    &:hover {
+      background: linear-gradient(90deg, #218838, #66bb6a);
     }
   }
 }

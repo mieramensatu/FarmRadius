@@ -2,7 +2,7 @@ import React from "react";
 import Navbar from "../../component/Navbar/Navbar";
 import Footer from "../../component/footer/footer";
 import MyComponent from "./map/Map";
-import Productsection from "./section/Product";
+import Productsection from "./section/Productsection";
 
 function Product() {
   return (
@@ -19,7 +19,7 @@ function Product() {
             Farm Radius
           </div>
         </div>
-        <div className="listing-product">
+        <div className="product">
           <Productsection />
         </div>
       </div>
