@@ -7,7 +7,7 @@ import Tim from "./team/Team";
 import Information from "./information/information.JSX";
 import Faq from "./faq/faq";
 
-function Landingpage({ children }) {
+function Landingpage() {
   return (
     <>
       <Navbar />
