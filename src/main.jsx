@@ -13,7 +13,7 @@ import AddProduct from "./pages/Admin/Product/AddProduct/Add";
 import ProfileAdmin from "./pages/Admin/Profile/Profile";
 import EditProfileAdmin from "./pages/Admin/EditProfile/EditProfile"
 import Profileuser from "./pages/ProfileUser/Profile/Profile";
-import UpdateProduct from "./pages/Admin/Product/EditProduct/Edit";
+import UpdateProduct from "./pages/Admin/Product/EditProduct/edit";
 import AllUser from "./pages/Admin/User/AllUser/user";
 import Auth from "./pages/auth/auth";
 
