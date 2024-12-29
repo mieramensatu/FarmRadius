@@ -2,7 +2,7 @@ import React from "react";
 import Navbar from "../../component/Navbar/Navbar";
 import HeroComponent from "./hero/Hero";
 import Partner from "./partner/Partner";
-import Footer from "../../component/Footer/footer";
+import Footer from "../../component/Footer/Footer";
 import Tim from "./team/Team";
 import Information from "./information/Information.JSX";
 import Faq from "./faq/Faq";
