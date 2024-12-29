@@ -15,7 +15,7 @@ import EditProfileAdmin from "./pages/Admin/EditProfile/EditProfile"
 import Profileuser from "./pages/ProfileUser/Profile/Profile";
 import UpdateProduct from "./pages/Admin/Product/EditProduct/edit";
 import AllUser from "./pages/Admin/User/AllUser/user";
-import Auth from "./pages/auth/auth";
+import Auth from "./pages/Auth/auth";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
