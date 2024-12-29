@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./main.css";
 import "lenis/dist/lenis.css";
-import Landingpage from "./pages/landingpage/Landing";
+import Landingpage from "./pages/Landingpage/Landing";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import ProductComponent from "./pages/Product/Product";
