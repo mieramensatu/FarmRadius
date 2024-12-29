@@ -4,7 +4,7 @@ import HeroComponent from "./hero/Hero";
 import Partner from "./partner/Partner";
 import Footer from "../../component/Footer/Footer";
 import Tim from "./team/Team";
-import Information from "./information/Information.JSX";
+import Information from "./information/Information";
 import Faq from "./faq/Faq";
 
 function Landingpage() {
