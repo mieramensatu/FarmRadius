@@ -1,11 +1,11 @@
 import React from "react";
 import Navbar from "../../component/Navbar/Navbar";
-import HeroComponent from "./hero/hero";
-import Partner from "./partner/partner";
+import HeroComponent from "./hero/Hero";
+import Partner from "./partner/Partner";
 import Footer from "../../component/Footer/footer";
 import Tim from "./team/Team";
-import Information from "./information/information.JSX";
-import Faq from "./faq/faq";
+import Information from "./information/Information.JSX";
+import Faq from "./faq/Faq";
 
 function Landingpage() {
   return (
