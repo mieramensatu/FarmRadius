@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -13,7 +13,28 @@ function Register() {
     no_telp: "",
     email: "",
     password: "",
+    role: "pembeli", // Default role is Pembeli
   });
+
+  const [roles, setRoles] = useState([]);
+
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const response = await axios.get(
+          "https://farmdistribution-40a43a4491b1.herokuapp.com/role"
+        );
+        const filteredRoles = response.data.roles.filter(
+          (role) => role.name_role.toLowerCase() === "pembeli" || role.name_role.toLowerCase() === "penjual"
+        );
+        setRoles(filteredRoles);
+      } catch (error) {
+        console.error("Error fetching roles:", error);
+      }
+    };
+
+    fetchRoles();
+  }, []);
 
   const handleInputChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
@@ -73,7 +94,11 @@ function Register() {
             icon: "success",
             confirmButtonText: "OK",
           }).then(() => {
-            window.location.href = "/product"; // Redirect setelah login
+            if (values.role === "penjual") {
+              window.location.href = "/peternakan"; // Redirect for sellers
+            } else {
+              window.location.href = "/product"; // Redirect for buyers
+            }
           });
         } else {
           Swal.fire({
@@ -167,6 +192,24 @@ function Register() {
               onChange={handleInputChange}
               value={values.password}
             />
+          </div>
+
+          <div>
+            <label className="register-form__label">Register as:</label>
+            <div className="register-form__radio-group">
+              {roles.map((role) => (
+                <label key={role.id}>
+                  <input
+                    type="radio"
+                    name="role"
+                    value={role.name_role.toLowerCase()}
+                    checked={values.role === role.name_role.toLowerCase()}
+                    onChange={handleInputChange}
+                  />
+                  {role.name_role}
+                </label>
+              ))}
+            </div>
           </div>
 
           <button type="submit" className="register-form__button">

@@ -16,6 +16,7 @@ import Profileuser from "./pages/ProfileUser/Profile/Profile";
 import UpdateProduct from "./pages/Admin/Product/EditProduct/edit";
 import AllUser from "./pages/Admin/User/AllUser/user";
 import Auth from "./pages/Auth/auth";
+import Toko from "./pages/Admin/Peternak/Peternak";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -39,6 +40,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/dashboard/profile" element={<ProfileAdmin />} />
         <Route path="/dashboard/edit-profile" element={<EditProfileAdmin />} />
         <Route path="/dashboard/user" element={<AllUser />} />
+        <Route path="/dashboard/toko" element={<Toko />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

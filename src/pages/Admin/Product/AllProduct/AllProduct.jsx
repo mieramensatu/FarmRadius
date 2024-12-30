@@ -65,7 +65,7 @@ function PeternakProduct() {
       if (result.isConfirmed) {
         try {
           const response = await fetch(
-            `https://farmdistribution-40a43a4491b1.herokuapp.com/product/delete/${id}`,
+            `http://localhost:8080/product/delete?id=${id}`,
             {
               method: "DELETE",
               headers: {
