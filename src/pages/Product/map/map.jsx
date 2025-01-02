@@ -5,10 +5,11 @@ import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import OSM from "ol/source/OSM";
-import { fromLonLat } from "ol/proj";
-import { Style, Icon } from "ol/style";
+import { fromLonLat, toLonLat } from "ol/proj";
+import { Style, Icon, Stroke } from "ol/style";
 import Point from "ol/geom/Point";
 import Feature from "ol/Feature";
+import Overlay from "ol/Overlay";
 import Cookies from "js-cookie";
 
 const attributions =
@@ -17,7 +18,11 @@ const fallbackPlace = [107.57634352477324, -6.87436891415509];
 
 const MapComponent = () => {
   const mapRef = useRef(null);
+  const popupRef = useRef(null);
+  const [mapInstance, setMapInstance] = useState(null);
   const [userCoordinates, setUserCoordinates] = useState(null);
+  const [popupContent, setPopupContent] = useState({});
+  const [endCoordinates, setEndCoordinates] = useState(null);
 
   const markerSource = new VectorSource();
 
@@ -32,10 +37,10 @@ const MapComponent = () => {
         src:
           "data:image/svg+xml;charset=utf-8," +
           encodeURIComponent(`  
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-          <path fill="red" d="M12 2C8.14 2 5 5.14 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.86-3.14-7-7-7zm0 10.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+        <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"40\" height=\"40\" viewBox=\"0 0 24 24\">
+          <path fill=\"blue\" d=\"M12 2C8.14 2 5 5.14 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.86-3.14-7-7-7zm0 10.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z\"/>
         </svg>`),
-        scale: 1,
+        scale: 0.8,
         anchor: [0.5, 1],
       }),
     }),
@@ -49,7 +54,8 @@ const MapComponent = () => {
             const { latitude, longitude } = position.coords;
             setUserCoordinates([longitude, latitude]);
           },
-          () => {
+          (error) => {
+            console.error("Error getting location:", error);
             setUserCoordinates(fallbackPlace);
           }
         );
@@ -65,12 +71,11 @@ const MapComponent = () => {
     const fetchAllPeternak = async () => {
       try {
         const token = Cookies.get("login");
-        if (!token) return;
+
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
         const response = await fetch("http://localhost:8080/all/peternak", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers,
         });
 
         if (!response.ok) {
@@ -93,7 +98,75 @@ const MapComponent = () => {
         }),
       });
 
-      addMarker(fromLonLat(userCoordinates));
+      const popup = new Overlay({
+        element: popupRef.current,
+        positioning: "bottom-center",
+        stopEvent: false,
+        offset: [0, -10],
+      });
+
+      map.addOverlay(popup);
+      setMapInstance(map);
+
+      const userMarker = addUserMarker(fromLonLat(userCoordinates));
+
+      map.on("singleclick", async (event) => {
+        const clickedFeature = map.forEachFeatureAtPixel(
+          event.pixel,
+          (feature) => feature
+        );
+
+        if (clickedFeature) {
+          const coordinates = toLonLat(
+            clickedFeature.getGeometry().getCoordinates()
+          );
+          setEndCoordinates(coordinates);
+
+          // Query OSRM API for route
+          const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${userCoordinates[0]},${userCoordinates[1]};${coordinates[0]},${coordinates[1]}?overview=full&geometries=geojson`;
+
+          try {
+            const response = await fetch(osrmUrl);
+            const data = await response.json();
+
+            if (!data.routes || data.routes.length === 0) {
+              console.error("No route found.");
+              return;
+            }
+
+            const route = data.routes[0];
+            const distance = route.distance / 1000; // in km
+            const duration = route.duration / 60; // in minutes
+
+            setPopupContent((prev) => ({
+              ...prev,
+              description: `Jarak: ${distance.toFixed(
+                2
+              )} km, Waktu Tempuh: ${duration.toFixed(2)} menit`,
+            }));
+
+            addRouteToMap(route.geometry.coordinates);
+          } catch (error) {
+            console.error("Error fetching route:", error);
+          }
+        }
+      });
+
+      map.on("pointermove", (event) => {
+        const hoveredFeature = map.forEachFeatureAtPixel(
+          event.pixel,
+          (feature) => feature
+        );
+
+        if (hoveredFeature) {
+          const { nama, description, image_farm } =
+            hoveredFeature.getProperties();
+          setPopupContent({ nama, description, image_farm });
+          popup.setPosition(hoveredFeature.getGeometry().getCoordinates());
+        } else {
+          popup.setPosition(undefined);
+        }
+      });
 
       fetchAllPeternak();
 
@@ -101,30 +174,125 @@ const MapComponent = () => {
     }
   }, [userCoordinates]);
 
-  const addMarker = (coordinate) => {
+  const addUserMarker = (coordinate) => {
+    const userMarker = new Feature({
+      geometry: new Point(coordinate),
+      nama: "Your Location",
+    });
+    userMarker.setStyle(
+      new Style({
+        image: new Icon({
+          src:
+            "data:image/svg+xml;charset=utf-8," +
+            encodeURIComponent(`
+            <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"40\" height=\"40\" viewBox=\"0 0 24 24\">
+              <path fill=\"green\" d=\"M12 2C8.14 2 5 5.14 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.86-3.14-7-7-7zm0 10.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z\"/>
+            </svg>`),
+          scale: 0.8,
+          anchor: [0.5, 1],
+        }),
+      })
+    );
+    markerSource.addFeature(userMarker);
+    return userMarker;
+  };
+
+  const addPeternakMarkers = (peternakData) => {
+    peternakData.forEach((peternak) => {
+      const { nama, description, image_farm, latitude, longitude } = peternak;
+      const coordinate = fromLonLat([
+        parseFloat(latitude),
+        parseFloat(longitude),
+      ]);
+      addMarker(coordinate, { nama, description, image_farm });
+    });
+  };
+
+  const addMarker = (coordinate, properties) => {
     const marker = new Feature({
       geometry: new Point(coordinate),
+      ...properties,
     });
     markerSource.addFeature(marker);
     return marker;
   };
 
-  const addPeternakMarkers = (peternakData) => {
-    peternakData.forEach(() => {
-      const randomCoordinate = [
-        107.57634352477324 + Math.random() * 0.01,
-        -6.87436891415509 + Math.random() * 0.01,
-      ];
-      addMarker(fromLonLat(randomCoordinate));
+  const addRouteToMap = (coordinates) => {
+    if (!mapInstance) {
+      console.error("Map instance is not initialized.");
+      return;
+    }
+    const vectorSource = new VectorSource();
+    const vectorLayer = new VectorLayer({
+      source: vectorSource,
+      style: new Style({
+        stroke: new Stroke({
+          color: "blue",
+          width: 4,
+        }),
+      }),
     });
+    mapInstance.addLayer(vectorLayer);
+
+    const routeFeature = new Feature({
+      geometry: new LineString(coordinates.map((coord) => fromLonLat(coord))),
+    });
+
+    vectorSource.addFeature(routeFeature);
+    mapInstance
+      .getView()
+      .fit(vectorSource.getExtent(), { padding: [50, 50, 50, 50] });
   };
 
   return (
     <div id="listing-map" style={{ position: "relative" }}>
       <div
         ref={mapRef}
-        style={{ width: "100%", height: "500px", borderRadius: "20px", overflow: "hidden" }}
+        style={{
+          width: "100%",
+          height: "500px",
+          borderRadius: "20px",
+          overflow: "hidden",
+        }}
       ></div>
+      <div
+        ref={popupRef}
+        style={{
+          position: "absolute",
+          background: "white",
+          padding: "8px",
+          borderRadius: "10px",
+          border: "1px solid #ccc",
+          whiteSpace: "normal",
+          transform: "translate(-50%, -100%)",
+          pointerEvents: "none",
+          boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
+          width: "200px",
+        }}
+      >
+        {popupContent.nama && (
+          <div>
+            <h5 style={{ margin: "8px 0", textAlign: "center" }}>
+              {popupContent.nama}
+            </h5>
+            {popupContent.image_farm && (
+              <img
+                src={popupContent.image_farm}
+                alt={popupContent.nama}
+                style={{
+                  width: "100%",
+                  height: "100px",
+                  borderRadius: "10px",
+                  marginBottom: "8px",
+                }}
+              />
+            )}
+            <p style={{ margin: 0, textAlign: "justify", fontSize: "12px" }}>
+              {popupContent.description}
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

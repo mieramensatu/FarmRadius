@@ -79,7 +79,6 @@ function Register() {
         const { token, user, message } = loginResponse.data;
 
         if (user && token) {
-          // Save token and encrypted role in cookies
           Cookies.set("login", token, { expires: 7 });
 
           const encryptedRole = CryptoJS.AES.encrypt(
@@ -95,9 +94,9 @@ function Register() {
             confirmButtonText: "OK",
           }).then(() => {
             if (values.role === "penjual") {
-              window.location.href = "/peternakan"; // Redirect for sellers
+              window.location.href = "/peternakan";
             } else {
-              window.location.href = "/product"; // Redirect for buyers
+              window.location.href = "/product";
             }
           });
         } else {
