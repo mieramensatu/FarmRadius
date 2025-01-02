@@ -2,44 +2,34 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import Swal from "sweetalert2";
+import CryptoJS from "crypto-js"; // Import CryptoJS untuk dekripsi
 import Logo from "./../../assets/logo/logo-ayam-removebg-preview1.png";
 
 function Sidebar() {
   const navigate = useNavigate();
-  const [role, setRole] = useState(Cookies.get("cachedRole") || null);
+  const [role, setRole] = useState(null);
 
-  // Fetch role dari API atau cookies
+  // Dekripsi role dari cookies
   useEffect(() => {
-    if (!role) {
-      const fetchRole = async () => {
+    const decryptRole = () => {
+      const encryptedRole = Cookies.get("role"); // Ambil role terenkripsi dari cookies
+      if (encryptedRole) {
         try {
-          const token = Cookies.get("login");
-          const response = await fetch("https://farmdistribution-40a43a4491b1.herokuapp.com/role", {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+          // Dekripsi role menggunakan kunci rahasia
+          const decryptedRole = CryptoJS.AES.decrypt(
+            encryptedRole,
+            "your-secret-key" // Gunakan kunci yang sama seperti saat enkripsi
+          ).toString(CryptoJS.enc.Utf8);
 
-          if (response.ok) {
-            const data = await response.json();
-            const userRole = data.roles.find(
-              (role) => role.status && (role.name_role === "Admin" || role.name_role === "Penjual")
-            );
-            const detectedRole = userRole ? userRole.name_role.toLowerCase() : null;
-            setRole(detectedRole);
-            Cookies.set("cachedRole", detectedRole); // Cache role in cookies
-          } else {
-            console.error("Failed to fetch roles");
-          }
+          setRole(decryptedRole.toLowerCase()); // Simpan role yang didekripsi di state
         } catch (error) {
-          console.error("Error fetching role:", error);
+          console.error("Error decrypting role:", error);
         }
-      };
+      }
+    };
 
-      fetchRole();
-    }
-  }, [role]);
+    decryptRole();
+  }, []);
 
   // Fungsi logout
   const handleLogout = () => {
@@ -49,10 +39,10 @@ function Sidebar() {
       icon: "success",
       confirmButtonText: "OK",
     }).then(() => {
-      // Hapus token dari cookies
+      // Hapus token dan role dari cookies
       Cookies.remove("login");
-      Cookies.remove("cachedRole");
-      console.log("Token and cached role removed. Logged out successfully.");
+      Cookies.remove("role");
+      console.log("Token and role removed. Logged out successfully.");
 
       // Arahkan ke halaman login
       navigate("/login");
