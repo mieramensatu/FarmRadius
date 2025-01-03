@@ -7,6 +7,7 @@ import VectorSource from "ol/source/Vector";
 import OSM from "ol/source/OSM";
 import { fromLonLat, toLonLat } from "ol/proj";
 import { Style, Icon, Stroke } from "ol/style";
+import LineString from "ol/geom/LineString";
 import Point from "ol/geom/Point";
 import Feature from "ol/Feature";
 import Overlay from "ol/Overlay";
@@ -174,6 +175,50 @@ const MapComponent = () => {
     }
   }, [userCoordinates]);
 
+  useEffect(() => {
+    if (userCoordinates) {
+      mapInstance?.on("singleclick", async (event) => {
+        const clickedFeature = mapInstance.forEachFeatureAtPixel(
+          event.pixel,
+          (feature) => feature
+        );
+  
+        if (clickedFeature) {
+          const peternakCoordinates = toLonLat(
+            clickedFeature.getGeometry().getCoordinates()
+          );
+          setEndCoordinates(peternakCoordinates);
+  
+          // Query OSRM API for route
+          const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${userCoordinates[0]},${userCoordinates[1]};${peternakCoordinates[0]},${peternakCoordinates[1]}?overview=full&geometries=geojson`;
+  
+          try {
+            const response = await fetch(osrmUrl);
+            const data = await response.json();
+  
+            if (!data.routes || data.routes.length === 0) {
+              console.error("No route found.");
+              return;
+            }
+  
+            const route = data.routes[0];
+            const distance = route.distance / 1000; // Convert to km
+            const duration = route.duration / 60; // Convert to minutes
+  
+            console.log(`Jarak: ${distance.toFixed(2)} km`);
+            console.log(`Waktu Tempuh: ${duration.toFixed(2)} menit`);
+  
+            // Add route to map
+            addRouteToMap(route.geometry.coordinates);
+          } catch (error) {
+            console.error("Error fetching route:", error);
+          }
+        }
+      });
+    }
+  }, [userCoordinates, mapInstance]);
+  
+
   const addUserMarker = (coordinate) => {
     const userMarker = new Feature({
       geometry: new Point(coordinate),
@@ -222,27 +267,31 @@ const MapComponent = () => {
       console.error("Map instance is not initialized.");
       return;
     }
+    // Clear existing route layers if necessary
     const vectorSource = new VectorSource();
     const vectorLayer = new VectorLayer({
       source: vectorSource,
       style: new Style({
         stroke: new Stroke({
-          color: "blue",
+          color: "blue", // Customize color as needed
           width: 4,
         }),
       }),
     });
     mapInstance.addLayer(vectorLayer);
-
+  
+    // Create a LineString feature for the route
     const routeFeature = new Feature({
       geometry: new LineString(coordinates.map((coord) => fromLonLat(coord))),
     });
-
+  
+    // Add the LineString feature to the vector source
     vectorSource.addFeature(routeFeature);
-    mapInstance
-      .getView()
-      .fit(vectorSource.getExtent(), { padding: [50, 50, 50, 50] });
+  
+    // Adjust the map view to fit the new route
+    mapInstance.getView().fit(vectorSource.getExtent(), { padding: [50, 50, 50, 50] });
   };
+  
 
   return (
     <div id="listing-map" style={{ position: "relative" }}>
