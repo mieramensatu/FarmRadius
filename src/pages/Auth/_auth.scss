@@ -1,57 +1,95 @@
-.update-role-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    background-color: #f5f5f5;
-  
-    h1 {
-      font-size: 28px;
-      font-weight: bold;
-      margin-bottom: 30px;
-      color: #333;
+.register-seller-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f3f4f6;
+
+  .register-seller-card {
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem;
+    padding: 2rem;
+    width: 100%;
+    max-width: 28rem;
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 1rem;
     }
-  
-    .button-container {
+
+    form {
       display: flex;
-      gap: 20px;
-  
-      .role-button {
-        padding: 15px 30px;
-        font-size: 18px;
-        font-weight: bold;
+      flex-direction: column;
+      gap: 1rem;
+
+      .seller-image-upload {
+        display: flex;
+        flex-direction: column;
+
+        label {
+          font-size: 0.875rem;
+          font-weight: 500;
+          color: #374151;
+          margin-bottom: 0.5rem;
+        }
+
+        input[type="file"] {
+          padding: 0.5rem;
+          border: 1px solid #d1d5db;
+          border-radius: 0.5rem;
+          cursor: pointer;
+        }
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        color: #111827;
+
+        &:focus {
+          outline: none;
+          box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+          border-color: #3b82f6;
+        }
+      }
+
+      textarea {
+        resize: none;
+        height: 100px;
+      }
+
+      .seller-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+
+        input {
+          width: 100%;
+        }
+      }
+
+      button {
+        background-color: #3b82f6;
+        color: #ffffff;
+        font-size: 1rem;
+        font-weight: 600;
+        padding: 0.75rem;
         border: none;
-        border-radius: 5px;
+        border-radius: 0.5rem;
         cursor: pointer;
-        transition: transform 0.2s, background-color 0.3s;
-  
-        // Button for Pembeli
-        &.Pembeli {
-          background-color: #4caf50;
-          color: white;
-  
-          &:hover {
-            background-color: #45a049;
-            transform: scale(1.05);
-          }
-        }
-  
-        // Button for Penjual
-        &.Penjual {
-          background-color: #2196f3;
-          color: white;
-  
-          &:hover {
-            background-color: #1976d2;
-            transform: scale(1.05);
-          }
-        }
-  
-        &:active {
-          transform: scale(1);
+        transition: background-color 0.3s;
+
+        &:hover {
+          background-color: #1b70f9;
         }
       }
     }
   }
-  
+}

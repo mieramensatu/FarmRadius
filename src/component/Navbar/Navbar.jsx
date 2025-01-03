@@ -5,7 +5,7 @@ import Logo from "./../../assets/logo/logo-ayam-removebg-preview1.png";
 import { DecodeRole } from "../../helper/Decode";
 
 function Navbar() {
-  const {getRole} = DecodeRole();
+  const { getRole } = DecodeRole();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [role, setRole] = useState("");
 
@@ -40,16 +40,14 @@ function Navbar() {
           <input type="text" placeholder="Search in FarmRadius" />
         </div>
 
-        {isLoggedIn && (
-          <div className="links">
-            <Link className="to-link" to="/">
-              Beranda
-            </Link>
-            <Link className="to-link" to="/product">
-              Product
-            </Link>
-          </div>
-        )}
+        <div className="links">
+          <Link className="to-link" to="/">
+            Beranda
+          </Link>
+          <Link className="to-link" to="/product">
+            Product
+          </Link>
+        </div>
       </div>
 
       <div className="nav-others">
@@ -60,26 +58,28 @@ function Navbar() {
             <span className="material-symbols-rounded">storefront</span>
           </Link>
         )}
-        {role === "Pembeli" && (
-          <Link to="/profile">
-            <span className="material-symbols-rounded profile">person</span>
-          </Link>
-        )}
 
-        {!isLoggedIn ? (
+        {isLoggedIn ? (
+          <>
+            {role === "Pembeli" && (
+              <Link to="/signup-seller">
+                <span className="material-symbols-outlined">sell</span>
+              </Link>
+            )}
+            <div className="logout-section">
+              <span
+                className="material-symbols-rounded logout"
+                onClick={handleLogout}
+                title="Logout"
+              >
+                logout
+              </span>
+            </div>
+          </>
+        ) : (
           <Link className="to-login" to="/login">
             <span className="material-symbols-rounded">account_circle</span>
           </Link>
-        ) : (
-          <div className="logout-section">
-            <span
-              className="material-symbols-rounded logout"
-              onClick={handleLogout}
-              title="Logout"
-            >
-              logout
-            </span>
-          </div>
         )}
       </div>
     </nav>

@@ -12,11 +12,11 @@ import PeternakProduct from "./pages/Admin/Product/AllProduct/AllProduct";
 import AddProduct from "./pages/Admin/Product/AddProduct/Add";
 import ProfileAdmin from "./pages/Admin/Profile/Profile";
 import EditProfileAdmin from "./pages/Admin/EditProfile/EditProfile"
-import Profileuser from "./pages/ProfileUser/Profile/Profile";
 import UpdateProduct from "./pages/Admin/Product/EditProduct/edit";
 import AllUser from "./pages/Admin/User/AllUser/user";
 import Auth from "./pages/Auth/auth";
 import Toko from "./pages/Admin/Peternak/Peternak";
+import RegisterSeller from "./pages/Auth/auth";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -26,11 +26,9 @@ createRoot(document.getElementById("root")).render(
         <Route path="/" element={<Landingpage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Register />} />
+        <Route path="/signup-seller" element={<RegisterSeller />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/product" element={<ProductComponent />} />
-
-        {/* Profile Routes */}
-        <Route path="/profile/" element={<Profileuser />} />
 
         {/* Admin Routes */}
         <Route path="/dashboard" element={<Dashboard />} />
