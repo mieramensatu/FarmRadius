@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import "./_productsection.scss";
 
-function Productsection() {
+function Productsection({ onAddToCart }) {
   const [products, setProducts] = useState([]);
-  const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -38,16 +37,6 @@ function Productsection() {
     fetchProducts();
   }, []);
 
-  const handleAddToCart = (product) => {
-    setCart((prevCart) => [...prevCart, product]);
-    alert(`${product.name} berhasil ditambahkan ke pesanan!`);
-  };
-
-  const handleCheckout = () => {
-    alert(`Produk yang dipesan:\n${cart.map((item) => item.name).join(", ")}`);
-    console.log("Produk yang akan dipesan:", cart);
-  };
-
   return (
     <div className="listing-product">
       {loading ? (
@@ -67,7 +56,7 @@ function Productsection() {
               <p className="product-status">Status: {product.status_name || "N/A"}</p>
               <button
                 className="order-button"
-                onClick={() => handleAddToCart(product)}
+                onClick={() => onAddToCart(product)}
               >
                 Pesan
               </button>

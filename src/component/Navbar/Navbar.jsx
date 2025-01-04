@@ -4,13 +4,12 @@ import Cookies from "js-cookie";
 import Logo from "./../../assets/logo/logo-ayam-removebg-preview1.png";
 import { DecodeRole } from "../../helper/Decode";
 
-function Navbar() {
+function Navbar({ toggleCart }) {
   const { getRole } = DecodeRole();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [role, setRole] = useState("");
 
   useEffect(() => {
-    // Ambil token dan role dari Cookies
     const token = Cookies.get("login");
     setIsLoggedIn(!!token);
     setRole(getRole || "");
@@ -51,7 +50,12 @@ function Navbar() {
       </div>
 
       <div className="nav-others">
-        <span className="material-symbols-rounded">local_mall</span>
+        <span
+          className="material-symbols-rounded"
+          onClick={toggleCart}
+        >
+          local_mall
+        </span>
 
         {(role === "Admin" || role === "Penjual") && (
           <Link to="/dashboard">
