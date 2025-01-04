@@ -137,13 +137,19 @@ const MapComponent = () => {
 
             const route = data.routes[0];
             const distance = route.distance / 1000; // in km
-            const duration = route.duration / 60; // in minutes
+            const durationInSeconds = route.duration; // in seconds
+
+            // Konversi durasi ke format hh:mm:ss
+            const hours = Math.floor(durationInSeconds / 3600);
+            const minutes = Math.floor((durationInSeconds % 3600) / 60);
+            const seconds = Math.floor(durationInSeconds % 60);
+            const formattedDuration = `${hours} jam ${minutes} menit ${seconds} detik`;
 
             setPopupContent((prev) => ({
               ...prev,
               description: `Jarak: ${distance.toFixed(
                 2
-              )} km, Waktu Tempuh: ${duration.toFixed(2)} menit`,
+              )} km, Waktu Tempuh: ${formattedDuration}`,
             }));
 
             addRouteToMap(route.geometry.coordinates);
@@ -271,33 +277,42 @@ const MapComponent = () => {
     return marker;
   };
 
+  let routeLayer = null; // Tambahkan variabel untuk menyimpan layer jalur
+
   const addRouteToMap = (coordinates) => {
     if (!mapInstance) {
       console.error("Map instance is not initialized.");
       return;
     }
-    // Clear existing route layers if necessary
+
+    // Hapus layer jalur sebelumnya jika ada
+    if (routeLayer) {
+      mapInstance.removeLayer(routeLayer);
+    }
+
     const vectorSource = new VectorSource();
-    const vectorLayer = new VectorLayer({
+    routeLayer = new VectorLayer({
       source: vectorSource,
       style: new Style({
         stroke: new Stroke({
-          color: "green", // Customize color as needed
+          color: "green", // Warna jalur
           width: 4,
         }),
       }),
     });
-    mapInstance.addLayer(vectorLayer);
 
-    // Create a LineString feature for the route
+    // Tambahkan layer jalur baru ke peta
+    mapInstance.addLayer(routeLayer);
+
+    // Buat fitur LineString untuk jalur
     const routeFeature = new Feature({
       geometry: new LineString(coordinates.map((coord) => fromLonLat(coord))),
     });
 
-    // Add the LineString feature to the vector source
+    // Tambahkan fitur jalur ke sumber vector
     vectorSource.addFeature(routeFeature);
 
-    // Adjust the map view to fit the new route
+    // Sesuaikan tampilan peta agar sesuai dengan jalur
     mapInstance
       .getView()
       .fit(vectorSource.getExtent(), { padding: [50, 50, 50, 50] });
