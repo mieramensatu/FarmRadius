@@ -114,6 +114,10 @@ function Login() {
               value={values.password}
               required
             />
+            <p className="login-card__forget">
+              Forgot your password?{" "}
+              <Link to="/reset-password">Reset it here</Link>
+            </p>
           </div>
           <button type="submit" className="login-form__button">
             Login

@@ -17,6 +17,7 @@ import AllUser from "./pages/Admin/User/AllUser/user";
 import Auth from "./pages/Auth/auth";
 import Toko from "./pages/Admin/Peternak/Peternak";
 import RegisterSeller from "./pages/Auth/auth";
+import Resetpassword from "./pages/Password/password";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -28,6 +29,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/signup" element={<Register />} />
         <Route path="/signup-seller" element={<RegisterSeller />} />
         <Route path="/auth" element={<Auth />} />
+        <Route path="/reset-password" element={<Resetpassword />} />    
         <Route path="/product" element={<ProductComponent />} />
 
         {/* Admin Routes */}

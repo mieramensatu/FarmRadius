@@ -553,6 +553,18 @@
 .login-card__footer a:hover {
   text-decoration: underline;
 }
+.login-card__forget {
+  font-size: 0.875rem;
+  color: #4b5563;
+  margin-top: 1rem;
+}
+.login-card__forget a {
+  color: #3b82f6;
+  text-decoration: none;
+}
+.login-card__forget a:hover {
+  text-decoration: underline;
+}
 
 .login-form {
   display: flex;

@@ -133,7 +133,7 @@ function Register() {
         no_telp: values.no_telp,
         email: values.email,
         alamat: values.alamat,
-        id_role: 9, // Default role "pembeli" dengan ID 9
+        id_role: 9,
         password: values.password,
       };
 

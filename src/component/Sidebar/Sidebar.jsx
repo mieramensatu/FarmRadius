@@ -71,6 +71,10 @@ function Sidebar() {
                 <i className="ph ph-barn"></i>
                 <span>Toko Peternak</span>
               </Link>
+              <Link to="/dashboard/verifikasi" data-menu="verifikasi" className="menu-item">
+                <i className="ph ph-verifikasi"></i>
+                <span>Verifikasi</span>
+              </Link>
               <Link to="/dashboard/user" data-menu="user" className="menu-item">
                 <i className="ph ph-user"></i>
                 <span>User</span>
@@ -78,10 +82,24 @@ function Sidebar() {
             </>
           )}
           {role === "penjual" && (
-            <Link to="/dashboard/product" data-menu="product" className="menu-item">
-              <i className="ph ph-storefront"></i>
-              <span>Product</span>
-            </Link>
+            <>
+              <Link
+                to="/dashboard/product"
+                data-menu="product"
+                className="menu-item"
+              >
+                <i className="ph ph-storefront"></i>
+                <span>Product</span>
+              </Link>
+              <Link
+                to="/dashboard/pesanan"
+                data-menu="product"
+                className="menu-item"
+              >
+                <i className="ph ph-storefront"></i>
+                <span>Pemesanan</span>
+              </Link>
+            </>
           )}
         </div>
         <div className="navigation-footer">
