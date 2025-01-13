@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import Cookies from "js-cookie"; // Pastikan js-cookie diimpor
 import Dashboard from "../Dashboard";
 
 function VerifyPeternakRequests() {
@@ -9,7 +10,7 @@ function VerifyPeternakRequests() {
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const token = Cookies.get("login"); // Pastikan token diambil dari cookie atau lokal storage
+        const token = Cookies.get("login"); // Ambil token dari cookies
         if (!token) {
           throw new Error("No token found. Please login.");
         }
@@ -19,14 +20,15 @@ function VerifyPeternakRequests() {
           {
             method: "GET",
             headers: {
-              Authorization: `Bearer ${token}`, // Tambahkan token di header
+              "Content-Type": "application/json",
+              login: token,
             },
           }
         );
 
         if (response.ok) {
           const data = await response.json();
-          setRequests(data.requests || []);
+          setRequests(data.data || []); // Update sesuai struktur respons
         } else {
           throw new Error("Failed to fetch requests");
         }
@@ -47,12 +49,18 @@ function VerifyPeternakRequests() {
 
   const handleApprove = async (requestId) => {
     try {
+      const token = Cookies.get("login");
+      if (!token) {
+        throw new Error("No token found. Please login.");
+      }
+
       const response = await fetch(
         "https://farmsdistribution-2664aad5e284.herokuapp.com/update/req/peternak",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Tambahkan header Authorization
           },
           body: JSON.stringify({ user_id: requestId }),
         }
@@ -66,7 +74,7 @@ function VerifyPeternakRequests() {
         });
 
         setRequests((prevRequests) =>
-          prevRequests.filter((request) => request.id !== requestId)
+          prevRequests.filter((request) => request.ID !== requestId)
         );
       } else {
         throw new Error("Failed to approve request");
@@ -83,10 +91,18 @@ function VerifyPeternakRequests() {
 
   const handleReject = async (requestId) => {
     try {
+      const token = Cookies.get("login");
+      if (!token) {
+        throw new Error("No token found. Please login.");
+      }
+
       const response = await fetch(
         `https://farmsdistribution-2664aad5e284.herokuapp.com/delete/req/peternak?_id=${requestId}`,
         {
           method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`, // Tambahkan header Authorization
+          },
         }
       );
 
@@ -98,7 +114,7 @@ function VerifyPeternakRequests() {
         });
 
         setRequests((prevRequests) =>
-          prevRequests.filter((request) => request.id !== requestId)
+          prevRequests.filter((request) => request.ID !== requestId)
         );
       } else {
         throw new Error("Failed to reject request");
@@ -136,21 +152,21 @@ function VerifyPeternakRequests() {
             </thead>
             <tbody>
               {requests.map((request, index) => (
-                <tr key={request.id}>
+                <tr key={request.ID}>
                   <td>{index + 1}</td>
-                  <td>{request.nama}</td>
+                  <td>{request.nama_akun}</td>
                   <td>{request.email}</td>
                   <td>{request.no_telp}</td>
                   <td>
                     <button
                       className="approve-button"
-                      onClick={() => handleApprove(request.id)}
+                      onClick={() => handleApprove(request.user_id)}
                     >
                       Approve
                     </button>
                     <button
                       className="reject-button"
-                      onClick={() => handleReject(request.id)}
+                      onClick={() => handleReject(request.ID)}
                     >
                       Reject
                     </button>
