@@ -57,10 +57,10 @@ function VerifyPeternakRequests() {
       const response = await fetch(
         "https://farmsdistribution-2664aad5e284.herokuapp.com/update/req/peternak",
         {
-          method: "POST",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Tambahkan header Authorization
+            login: token,
           },
           body: JSON.stringify({ user_id: requestId }),
         }
@@ -99,9 +99,10 @@ function VerifyPeternakRequests() {
       const response = await fetch(
         `https://farmsdistribution-2664aad5e284.herokuapp.com/delete/req/peternak?_id=${requestId}`,
         {
-          method: "POST",
+          method: "DELETE",
           headers: {
-            Authorization: `Bearer ${token}`, // Tambahkan header Authorization
+            "Content-Type": "application/json",
+            login: token,
           },
         }
       );
