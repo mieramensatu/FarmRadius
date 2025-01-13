@@ -72,7 +72,7 @@ function Sidebar() {
                 <span>Toko Peternak</span>
               </Link>
               <Link to="/dashboard/verifikasi" data-menu="verifikasi" className="menu-item">
-                <i className="ph ph-verifikasi"></i>
+                <i className="ph ph-user-check"></i>
                 <span>Verifikasi</span>
               </Link>
               <Link to="/dashboard/user" data-menu="user" className="menu-item">

@@ -12,7 +12,7 @@ function Productsection({ onAddToCart }) {
     const fetchProducts = async () => {
       try {
         const response = await fetch(
-          "https://farmdistribution-40a43a4491b1.herokuapp.com/product",
+          "https://farmsdistribution-2664aad5e284.herokuapp.com/product",
           {
             method: "GET",
             headers: {

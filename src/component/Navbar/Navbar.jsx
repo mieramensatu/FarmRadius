@@ -66,7 +66,7 @@ function Navbar({ toggleCart }) {
         {isLoggedIn ? (
           <>
             {role === "Pembeli" && (
-              <Link to="/signup-seller">
+              <Link to="/req-peternak">
                 <span className="material-symbols-outlined">sell</span>
               </Link>
             )}

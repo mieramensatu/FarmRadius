@@ -75,7 +75,7 @@ const MapComponent = () => {
 
         const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
-        const response = await fetch("http://localhost:8080/all/peternak", {
+        const response = await fetch("https://farmsdistribution-2664aad5e284.herokuapp.com/all/peternak", {
           headers,
         });
 

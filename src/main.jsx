@@ -18,6 +18,8 @@ import Auth from "./pages/Auth/auth";
 import Toko from "./pages/Admin/Peternak/Peternak";
 import RegisterSeller from "./pages/Auth/auth";
 import Resetpassword from "./pages/Password/password";
+import RequestPeternak from "./pages/Verif/verifikasi";
+import VerifyPeternakRequests from "./pages/Admin/VerifikasiAkun/Verifikasi";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -29,7 +31,8 @@ createRoot(document.getElementById("root")).render(
         <Route path="/signup" element={<Register />} />
         <Route path="/signup-seller" element={<RegisterSeller />} />
         <Route path="/auth" element={<Auth />} />
-        <Route path="/reset-password" element={<Resetpassword />} />    
+        <Route path="/reset-password" element={<Resetpassword />} /> 
+        <Route path="/req-peternak" element={<RequestPeternak />} />   
         <Route path="/product" element={<ProductComponent />} />
 
         {/* Admin Routes */}
@@ -41,6 +44,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/dashboard/edit-profile" element={<EditProfileAdmin />} />
         <Route path="/dashboard/user" element={<AllUser />} />
         <Route path="/dashboard/toko" element={<Toko />} />
+        <Route path="/dashboard/verifikasi" element={<VerifyPeternakRequests />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

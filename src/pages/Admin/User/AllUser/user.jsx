@@ -17,7 +17,7 @@ function AllUser() {
     // Fetch users
     const fetchUsers = async () => {
       try {
-        const userResponse = await fetch("http://localhost:8080/all/akun", {
+        const userResponse = await fetch("https://farmsdistribution-2664aad5e284.herokuapp.com/all/akun", {
           method: "GET",
           headers: {
             login: token,
@@ -38,7 +38,7 @@ function AllUser() {
     // Fetch roles
     const fetchRoles = async () => {
       try {
-        const roleResponse = await fetch("http://localhost:8080/role", {
+        const roleResponse = await fetch("https://farmsdistribution-2664aad5e284.herokuapp.com/role", {
           method: "GET",
         });
 
@@ -92,7 +92,7 @@ function AllUser() {
         };
 
         const response = await fetch(
-          `http://localhost:8080/update/akun?id=${user.id_user}`,
+          `https://farmsdistribution-2664aad5e284.herokuapp.com/update/akun?id=${user.id_user}`,
           {
             method: "PUT",
             headers: {
@@ -157,7 +157,7 @@ function AllUser() {
     if (confirmation.isConfirmed) {
       try {
         const response = await fetch(
-          `http://localhost:8080/delete/akun?id=${user.id_user}`,
+          `https://farmsdistribution-2664aad5e284.herokuapp.com/delete/akun?id=${user.id_user}`,
           {
             method: "DELETE",
             headers: {
