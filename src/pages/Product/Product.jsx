@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Navbar from "../../component/Navbar/Navbar";
 import Footer from "../../component/Footer/Footer";
-import MyComponent from "./map/Map";
+import MyComponent from "./map/map";
 import Productsection from "./section/Productsection";
 import Order from "./order/order";
 
