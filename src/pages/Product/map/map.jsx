@@ -24,6 +24,7 @@ const MapComponent = () => {
   const [userCoordinates, setUserCoordinates] = useState(null);
   const [popupContent, setPopupContent] = useState({});
   const [endCoordinates, setEndCoordinates] = useState(null);
+  const [routeInfo, setRouteInfo] = useState({ distance: "0", duration: "" });
 
   const markerSource = new VectorSource();
 
@@ -75,9 +76,12 @@ const MapComponent = () => {
 
         const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
-        const response = await fetch("https://farmsdistribution-2664aad5e284.herokuapp.com/all/peternak", {
-          headers,
-        });
+        const response = await fetch(
+          "https://farmsdistribution-2664aad5e284.herokuapp.com/all/peternak",
+          {
+            headers,
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Failed to fetch peternak data");
@@ -151,6 +155,13 @@ const MapComponent = () => {
                 2
               )} km, Waktu Tempuh: ${formattedDuration}`,
             }));
+
+            console.log("Route Info:", routeInfo);
+
+            setRouteInfo({
+              distance: `${distance.toFixed(2)} km`,
+              duration: formattedDuration,
+            });
 
             addRouteToMap(route.geometry.coordinates);
           } catch (error) {
@@ -324,7 +335,7 @@ const MapComponent = () => {
         ref={mapRef}
         style={{
           width: "100%",
-          height: "500px",
+          height: "250px",
           borderRadius: "20px",
           overflow: "hidden",
         }}
@@ -367,6 +378,50 @@ const MapComponent = () => {
           </div>
         )}
       </div>
+      <form
+        style={{
+          marginTop: "40px",
+          padding: "10px",
+          border: "1px solid #ccc",
+          borderRadius: "10px",
+          backgroundColor: "#fff", // Tambahkan background agar terlihat
+          zIndex: 1000, // Pastikan form berada di atas peta
+          position: "relative", // Jaga agar tetap berada di bawah peta
+        }}
+      >
+        <h4>Informasi Rute</h4>
+        <h4>Kendaraan Rute Mobil</h4>
+        <div style={{ marginBottom: "10px" }}>
+          <label>Jarak: </label>
+          <input
+            type="text"
+            value={routeInfo.distance}
+            readOnly
+            style={{
+              width: "100%",
+              padding: "8px",
+              marginTop: "5px",
+              borderRadius: "5px",
+              border: "1px solid #ccc",
+            }}
+          />
+        </div>
+        <div>
+          <label>Waktu Tempuh: </label>
+          <input
+            type="text"
+            value={routeInfo.duration}
+            readOnly
+            style={{
+              width: "100%",
+              padding: "8px",
+              marginTop: "5px",
+              borderRadius: "5px",
+              border: "1px solid #ccc",
+            }}
+          />
+        </div>
+      </form>
     </div>
   );
 };
