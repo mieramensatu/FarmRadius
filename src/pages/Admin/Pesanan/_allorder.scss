@@ -1,0 +1,46 @@
+.order-list-container {
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+  
+      h1 {
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+    }
+  
+    .order-table {
+      width: 100%;
+      border-collapse: collapse;
+  
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+      }
+  
+      th {
+        background-color: #f4f4f4;
+        font-weight: bold;
+      }
+  
+      .status-label {
+        padding: 5px 10px;
+        border-radius: 5px;
+  
+        &.pending {
+          background-color: #ffecb3;
+          color: #f57c00;
+        }
+  
+        &.completed {
+          background-color: #c8e6c9;
+          color: #388e3c;
+        }
+      }
+    }
+  }
+  
