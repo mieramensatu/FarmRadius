@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Dashboard from "../Dashboard";
 import Cookies from "js-cookie";
-import Swal from "sweetalert2"; // Import SweetAlert2
-import "./_peternak.scss"; // Import SCSS
+import Swal from "sweetalert2";
+import "./_peternak.scss";
 
 function Toko() {
   const [farms, setFarms] = useState([]);
@@ -29,8 +29,8 @@ function Toko() {
         }
 
         const data = await response.json();
-        console.log("Fetched farms data:", data); // Debug log untuk data
-        setFarms(data.data); // Simpan data toko ke state
+        console.log("Fetched farms data:", data);
+        setFarms(data.data);
       } catch (error) {
         console.error("Error fetching farms:", error);
       } finally {
@@ -55,7 +55,7 @@ function Toko() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          console.log("Attempting to delete farm with ID:", id); // Debug log untuk ID
+          console.log("Attempting to delete farm with ID:", id);
           const response = await fetch(
             `http://localhost:8080/product/delete?id=${id}`,
             {
@@ -73,10 +73,10 @@ function Toko() {
               title: "Deleted!",
               text: "The farm has been deleted.",
             });
-            setFarms((prevFarms) => prevFarms.filter((farm) => farm.id !== id)); // Hapus farm dari state
+            setFarms((prevFarms) => prevFarms.filter((farm) => farm.id !== id)); 
           } else {
             const result = await response.json();
-            console.error("Server response:", result); // Debug log respons server
+            console.error("Server response:", result);
             Swal.fire({
               icon: "error",
               title: "Failed to Delete",

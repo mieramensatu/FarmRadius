@@ -13,7 +13,7 @@ function Product() {
 
   const handleAddToCart = (product) => {
     setCart((prevCart) => [...prevCart, product]);
-    setIsCartVisible(true); // Buka sidebar ketika produk ditambahkan
+    setIsCartVisible(true); 
   };
 
   return (

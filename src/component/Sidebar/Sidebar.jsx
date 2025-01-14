@@ -99,6 +99,14 @@ function Sidebar() {
                 <i className="ph ph-storefront"></i>
                 <span>Pemesanan</span>
               </Link>
+              <Link
+                to="/dashboard/payment"
+                data-menu="product"
+                className="menu-item"
+              >
+                <i className="ph ph-cardholder"></i>
+                <span>Payment</span>
+              </Link>
             </>
           )}
         </div>

@@ -1,6 +1,6 @@
 import React from "react";
 
-function Order({ cart }) {
+function Order({ cart, onCheckout }) {
   return (
     <div className="order-sidebar-content">
       <h2>Keranjang Belanja</h2>
@@ -10,12 +10,14 @@ function Order({ cart }) {
         ) : (
           cart.map((item, index) => (
             <li key={index}>
-              {item.name} - Rp {item.price_per_kg.toLocaleString()}
+              {item.name} - Rp {item.price_per_kg.toLocaleString()} x {item.quantity}
             </li>
           ))
         )}
       </ul>
-      <button className="checkout-button">Checkout</button>
+      <button className="checkout-button" onClick={onCheckout}>
+        Checkout
+      </button>
     </div>
   );
 }

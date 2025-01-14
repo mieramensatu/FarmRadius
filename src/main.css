@@ -1128,7 +1128,7 @@
 
 .listing-map {
   width: 100%;
-  height: 73vh;
+  height: 100vh;
   padding: 0 3.4vw 2.4vw;
   position: relative;
   grid-area: map;

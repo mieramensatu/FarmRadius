@@ -27,7 +27,27 @@ function Pesanan() {
         }
 
         const data = await response.json();
-        setOrders(data); // Simpan data pesanan ke state
+        
+        // Map data API ke format yang diinginkan
+        const formattedData = data.map((item) => ({
+          email: item.email,
+          invoice_id: item.invoice_id,
+          invoice_number: item.invoice_number,
+          nama_pembeli: item.nama_pembeli,
+          no_telp: item.no_telp,
+          products: item.products.map((product) => ({
+            created_at: product.created_at,
+            order_id: product.order_id,
+            product_id: product.product_id,
+            quantity: product.quantity,
+            status: product.status,
+            total_harga: product.total_harga,
+            updated_at: product.updated_at,
+          })),
+          total_amount: item.total_amount,
+        }));
+
+        setOrders(formattedData); // Simpan data terformat ke state
         setLoading(false);
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -51,38 +71,32 @@ function Pesanan() {
             <thead>
               <tr>
                 <th>#</th>
-                <th>Order ID</th>
-                <th>Invoice ID</th>
-                <th>User ID</th>
-                <th>Product ID</th>
-                <th>Quantity</th>
-                <th>Total Harga</th>
-                <th>Status</th>
-                <th>Created At</th>
+                <th>Email</th>
+                <th>Invoice Number</th>
+                <th>Nama Pembeli</th>
+                <th>No. Telp</th>
+                <th>Produk</th>
+                <th>Total Amount</th>
               </tr>
             </thead>
             <tbody>
               {orders.map((order, index) => (
-                <tr key={order.id}>
+                <tr key={order.invoice_id}>
                   <td>{index + 1}</td>
-                  <td>{order.id}</td>
-                  <td>{order.invoice_id}</td>
-                  <td>{order.user_id}</td>
-                  <td>{order.product_id}</td>
-                  <td>{order.quantity}</td>
-                  <td>Rp {order.total_harga.toLocaleString("id-ID")}</td>
+                  <td>{order.email}</td>
+                  <td>{order.invoice_number}</td>
+                  <td>{order.nama_pembeli}</td>
+                  <td>{order.no_telp}</td>
                   <td>
-                    <span
-                      className={`status-label ${
-                        order.status === "Pending" ? "pending" : "completed"
-                      }`}
-                    >
-                      {order.status}
-                    </span>
+                    {order.products.map((product) => (
+                      <div key={product.order_id}>
+                        <p>Product ID: {product.product_id}</p>
+                        <p>Quantity: {product.quantity}</p>
+                        <p>Harga: {product.total_harga}</p>
+                      </div>
+                    ))}
                   </td>
-                  <td>
-                    {new Date(order.created_at).toLocaleDateString("id-ID")}
-                  </td>
+                  <td>{order.total_amount}</td>
                 </tr>
               ))}
             </tbody>
