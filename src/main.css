@@ -242,9 +242,9 @@
 }
 .app-header-actions {
   display: flex;
+  justify-content: flex-end;
   align-items: center;
-  justify-content: center;
-  flex-direction: row;
+  width: 100%;
   gap: 20px;
 }
 .app-header-actions .user-profile {

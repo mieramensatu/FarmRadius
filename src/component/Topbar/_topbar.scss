@@ -98,7 +98,10 @@
     }
   
     &-actions {
-      @include m.flex();
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      width: 100%;
       gap: 20px;
   
       .user-profile {

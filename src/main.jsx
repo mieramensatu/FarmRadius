@@ -20,6 +20,7 @@ import RegisterSeller from "./pages/Auth/auth";
 import Resetpassword from "./pages/Password/password";
 import RequestPeternak from "./pages/Verif/Verifikasi";
 import VerifyPeternakRequests from "./pages/Admin/VerifikasiAkun/Verifikasi";
+import Pesanan from "./pages/Admin/Pesanan/pesanan";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -45,6 +46,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/dashboard/user" element={<AllUser />} />
         <Route path="/dashboard/toko" element={<Toko />} />
         <Route path="/dashboard/verifikasi" element={<VerifyPeternakRequests />} />
+        <Route path="/dashboard/pesanan" element={<Pesanan />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

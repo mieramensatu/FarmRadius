@@ -44,15 +44,6 @@ function Topbar() {
 
   return (
     <header className="app-header">
-      <div className="app-header-navigation">
-        <div className="dashboard-submenu submenu">Overview</div>
-      </div>
-      <div className="app-header-navigation">
-        <div className="dashboard-submenu submenu">Product</div>
-      </div>
-      <div className="app-header-navigation">
-        <div className="dashboard-submenu submenu">Profile</div>
-      </div>
       <div className="app-header-actions">
         <Link to="/dashboard/profile" className="user-profile">
           <span>{profile.name}</span>
