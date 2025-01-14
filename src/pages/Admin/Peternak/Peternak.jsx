@@ -19,6 +19,7 @@ function Toko() {
         const response = await fetch("http://localhost:8080/all/peternak", {
           method: "GET",
           headers: {
+            "Content-Type": "application/json",
             login: token,
           },
         });
@@ -28,10 +29,11 @@ function Toko() {
         }
 
         const data = await response.json();
+        console.log("Fetched farms data:", data); // Debug log untuk data
         setFarms(data.data); // Simpan data toko ke state
-        setLoading(false);
       } catch (error) {
         console.error("Error fetching farms:", error);
+      } finally {
         setLoading(false);
       }
     };
@@ -53,11 +55,13 @@ function Toko() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
+          console.log("Attempting to delete farm with ID:", id); // Debug log untuk ID
           const response = await fetch(
             `http://localhost:8080/product/delete?id=${id}`,
             {
               method: "DELETE",
               headers: {
+                "Content-Type": "application/json",
                 login: token,
               },
             }
@@ -69,9 +73,10 @@ function Toko() {
               title: "Deleted!",
               text: "The farm has been deleted.",
             });
-            setFarms(farms.filter((farm) => farm.id !== id)); // Hapus farm dari state
+            setFarms((prevFarms) => prevFarms.filter((farm) => farm.id !== id)); // Hapus farm dari state
           } else {
             const result = await response.json();
+            console.error("Server response:", result); // Debug log respons server
             Swal.fire({
               icon: "error",
               title: "Failed to Delete",

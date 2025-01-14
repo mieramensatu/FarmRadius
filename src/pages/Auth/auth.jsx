@@ -39,11 +39,13 @@ function RegisterSeller() {
       }
 
       try {
-        const response = await axios.get(
-          "http://localhost:8080/get/akun/?id=12", // Replace with dynamic user ID retrieval
+        const response = await fetch(
+          `https://farmsdistribution-2664aad5e284.herokuapp.com/get/akun/?id=${userId}`,
           {
+            method: "GET",
             headers: {
-              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+              login: token, // Pastikan token tersedia
             },
           }
         );
@@ -180,12 +182,12 @@ function RegisterSeller() {
       }
 
       const response = await axios.post(
-        "http://localhost:8080/peternakan",
+        "https://farmsdistribution-2664aad5e284.herokuapp.com/peternakan",
         formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            login: token,
           },
         }
       );
@@ -207,7 +209,10 @@ function RegisterSeller() {
         throw new Error(response.data.message || "Failed to register farm.");
       }
     } catch (error) {
-      console.error("Error during registration:", error.response?.data || error.message);
+      console.error(
+        "Error during registration:",
+        error.response?.data || error.message
+      );
       Swal.fire({
         title: "Error",
         text: error.response?.data?.message || "Something went wrong!",
@@ -229,19 +234,26 @@ function RegisterSeller() {
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            login: token,
           },
         }
       );
 
       if (response.status === 200) {
-        console.log("User role updated to Penjual successfully:", response.data);
+        console.log(
+          "User role updated to Penjual successfully:",
+          response.data
+        );
         Cookies.set("role", "Penjual", { expires: 7 });
       } else {
         console.error("Failed to update user role:", response.status);
       }
     } catch (error) {
-      console.error("Error updating role:", error.response?.data || error.message);
+      console.error(
+        "Error updating role:",
+        error.response?.data || error.message
+      );
     }
   };
 

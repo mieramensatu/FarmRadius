@@ -18,7 +18,7 @@ import Auth from "./pages/Auth/auth";
 import Toko from "./pages/Admin/Peternak/Peternak";
 import RegisterSeller from "./pages/Auth/auth";
 import Resetpassword from "./pages/Password/password";
-import RequestPeternak from "./pages/Verif/verifikasi";
+import RequestPeternak from "./pages/Verif/Verifikasi";
 import VerifyPeternakRequests from "./pages/Admin/VerifikasiAkun/Verifikasi";
 
 createRoot(document.getElementById("root")).render(
