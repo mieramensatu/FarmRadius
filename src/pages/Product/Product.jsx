@@ -12,8 +12,20 @@ function Product() {
   const toggleCart = () => setIsCartVisible(!isCartVisible);
 
   const handleAddToCart = (product) => {
-    setCart((prevCart) => [...prevCart, product]);
-    setIsCartVisible(true); 
+    setCart((prevCart) => {
+      const existingProduct = prevCart.find((item) => item.id === product.id);
+
+      if (existingProduct) {
+        return prevCart.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      }
+
+      return [...prevCart, { ...product, quantity: 1 }];
+    });
+    setIsCartVisible(true);
   };
 
   return (
@@ -26,10 +38,13 @@ function Product() {
         <div className="listing-location">
           <div className="listing-location-title">Product Farm Radius</div>
           <div className="listing-location-desc">
-            Silahkan datang menuju lokasi kami bila Anda memerlukan sesuatu pada Farm Radius
+            Silahkan datang menuju lokasi kami bila Anda memerlukan sesuatu pada
+            Farm Radius
           </div>
         </div>
-        <div className={`product-wrapper ${isCartVisible ? "with-sidebar" : ""}`}>
+        <div
+          className={`product-wrapper ${isCartVisible ? "with-sidebar" : ""}`}
+        >
           <div className="product">
             <Productsection onAddToCart={handleAddToCart} />
           </div>

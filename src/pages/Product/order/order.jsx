@@ -1,6 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 
-function Order({ cart, onCheckout }) {
+function Order({ cart, onUpdateQuantity, onCheckout }) {
+  const handleCheckout = async () => {
+    try {
+      await onCheckout();
+      alert("Checkout berhasil!");
+    } catch (error) {
+      alert("Checkout gagal: " + error.message);
+    }
+  };
+
   return (
     <div className="order-sidebar-content">
       <h2>Keranjang Belanja</h2>
@@ -10,14 +19,18 @@ function Order({ cart, onCheckout }) {
         ) : (
           cart.map((item, index) => (
             <li key={index}>
-              {item.name} - Rp {item.price_per_kg.toLocaleString()} x {item.quantity}
+              <div className="cart-item">
+                {item.name} - Rp {item.price_per_kg.toLocaleString()} x {item.quantity} kg
+                <div className="quantity-controls">
+                  <button onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}>-</button>
+                  <button onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}>+</button>
+                </div>
+              </div>
             </li>
           ))
         )}
       </ul>
-      <button className="checkout-button" onClick={onCheckout}>
-        Checkout
-      </button>
+      <button className="checkout-button" onClick={handleCheckout}>Checkout</button>
     </div>
   );
 }
