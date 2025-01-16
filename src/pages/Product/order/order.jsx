@@ -1,4 +1,5 @@
 import React from "react";
+import "./_order.scss";
 
 function Order({ cart, onUpdateQuantity, onCheckout }) {
   return (
@@ -13,14 +14,15 @@ function Order({ cart, onUpdateQuantity, onCheckout }) {
               <div className="cart-item">
                 {item.name} - Rp {item.price_per_kg.toLocaleString()} x {item.quantity} kg
                 <div className="quantity-controls">
-                  <button onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}>-</button>
+                  <button className="button" style={{width: "20px", height:"20px", borderRadius:"50%", border:"transparent", cursor: "pointer"}} onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}>-</button>
                   <input
+                  className="input"
                     type="number"
                     value={item.quantity}
                     readOnly
-                    style={{ width: "40px", textAlign: "center" }}
+                    style={{ width: "25px", margin:"0 5px", backgroundColor: "transparent", border: "none", textAlign: "center" }}
                   />
-                  <button onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}>+</button>
+                  <button className="button" style={{width: "20px", height:"20px", borderRadius:"50%", border:"transparent", cursor: "pointer"}} onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}>+</button>
                 </div>
               </div>
             </li>

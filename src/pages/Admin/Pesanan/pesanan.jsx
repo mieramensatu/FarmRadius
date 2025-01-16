@@ -47,7 +47,7 @@ function Pesanan() {
           total_amount: item.total_amount,
         }));
 
-        setOrders(formattedData); // Simpan data terformat ke state
+        setOrders(formattedData); 
         setLoading(false);
       } catch (error) {
         console.error("Error fetching orders:", error);

@@ -4,10 +4,12 @@ import Footer from "../../component/Footer/Footer";
 import MyComponent from "./map/map";
 import Productsection from "./section/Productsection";
 import Order from "./order/order";
+import Cookies from "js-cookie";
 
 function Product() {
   const [isCartVisible, setIsCartVisible] = useState(false);
   const [cart, setCart] = useState([]);
+  const token = Cookies.get("login");
 
   // Load keranjang dari Local Storage saat komponen dimuat
   useEffect(() => {
@@ -58,7 +60,7 @@ function Product() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            login: token,
           },
           body: JSON.stringify(orderData),
         }
@@ -69,8 +71,8 @@ function Product() {
       }
 
       alert("Checkout berhasil!");
-      setCart([]); // Kosongkan keranjang setelah checkout
-      localStorage.removeItem("cart"); // Hapus keranjang dari Local Storage
+      setCart([]);
+      localStorage.removeItem("cart");
       setIsCartVisible(false);
     } catch (error) {
       console.error(error);

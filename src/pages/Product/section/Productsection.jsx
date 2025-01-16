@@ -16,7 +16,7 @@ function Productsection({ onAddToCart }) {
           {
             method: "GET",
             headers: {
-              Authorization: `Bearer ${token}`,
+              login: token,
             },
           }
         );
