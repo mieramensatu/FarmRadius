@@ -11,63 +11,30 @@ function RegisterSeller() {
     city: "",
     state: "",
     postal_code: "",
+    country: "Indonesia", // Default country
+    lat: "", // Latitude
+    lon: "", // Longitude
     email: "",
     phonenumber_farm: "",
     description: "",
     image_farm: null,
     farm_type: "",
   });
-  const [userId, setUserId] = useState(null);
+
+  const token = Cookies.get("login");
 
   useEffect(() => {
-    // Fetch user ID from profile endpoint
-    const fetchUserId = async () => {
-      const token = Cookies.get("login");
-      console.log("Token from cookies:", token);
-
-      if (!token) {
-        console.error("Token not found! Redirecting to login.");
-        Swal.fire({
-          title: "Error",
-          text: "You are not authenticated. Please log in.",
-          icon: "error",
-          confirmButtonText: "OK",
-        }).then(() => {
-          window.location.href = "/login";
-        });
-        return;
-      }
-
-      try {
-        const response = await fetch(
-          `https://farmsdistribution-2664aad5e284.herokuapp.com/get/akun/?id=${userId}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              login: token, // Pastikan token tersedia
-            },
-          }
-        );
-
-        if (response.status === 200) {
-          console.log("Fetched user data:", response.data.user);
-          setUserId(response.data.user.id_user);
-          setValues((prevValues) => ({
-            ...prevValues,
-            email: response.data.user.email,
-            phonenumber_farm: response.data.user.no_telp,
-            name: response.data.user.nama,
-          }));
-        } else {
-          console.error("Failed to fetch user ID. Status:", response.status);
-        }
-      } catch (error) {
-        console.error("Error fetching user ID:", error);
+    // Fetch data from localStorage
+    const fetchUserDataFromStorage = () => {
+      const registerData = JSON.parse(localStorage.getItem("registerData"));
+      if (registerData) {
+        setValues((prevValues) => ({
+          ...prevValues,
+          email: registerData.email || "",
+          phonenumber_farm: registerData.no_telp || "",
+        }));
       }
     };
-
-    fetchUserId();
 
     // Fetch location for autofill
     const fetchLocation = () => {
@@ -75,6 +42,12 @@ function RegisterSeller() {
         navigator.geolocation.getCurrentPosition(
           async (position) => {
             const { latitude, longitude } = position.coords;
+            setValues((prevValues) => ({
+              ...prevValues,
+              lat: latitude.toString(),
+              lon: longitude.toString(),
+            }));
+
             try {
               const response = await axios.get(
                 `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
@@ -83,14 +56,18 @@ function RegisterSeller() {
 
               setValues((prevValues) => ({
                 ...prevValues,
-                street: address?.road || "",
-                city: address?.city || address?.town || address?.village || "",
-                state: address?.state || "",
-                postal_code: address?.postcode || "",
+                street: address?.road || prevValues.street || "Unknown Street",
+                city:
+                  address?.city ||
+                  address?.town ||
+                  address?.village ||
+                  prevValues.city ||
+                  "Unknown City",
+                state: address?.state || prevValues.state || "Unknown State",
+                postal_code:
+                  address?.postcode || prevValues.postal_code || "00000",
               }));
-              console.log("Location autofilled:", address);
             } catch (error) {
-              console.error("Error fetching address:", error);
               Swal.fire({
                 title: "Error",
                 text: "Failed to fetch address. Please try again.",
@@ -100,7 +77,6 @@ function RegisterSeller() {
             }
           },
           (error) => {
-            console.error("Error getting GPS location:", error);
             Swal.fire({
               title: "Error",
               text: "Please enable GPS to autofill address fields.",
@@ -119,6 +95,7 @@ function RegisterSeller() {
       }
     };
 
+    fetchUserDataFromStorage();
     fetchLocation();
   }, []);
 
@@ -128,7 +105,9 @@ function RegisterSeller() {
   };
 
   const handleFileChange = (e) => {
-    setValues({ ...values, image_farm: e.target.files[0] });
+    if (e.target.files.length > 0) {
+      setValues({ ...values, image_farm: e.target.files[0] });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -140,6 +119,9 @@ function RegisterSeller() {
       !values.city ||
       !values.state ||
       !values.postal_code ||
+      !values.country ||
+      !values.lat ||
+      !values.lon ||
       !values.email ||
       !values.phonenumber_farm ||
       !values.description ||
@@ -161,6 +143,9 @@ function RegisterSeller() {
     formData.append("city", values.city);
     formData.append("state", values.state);
     formData.append("postal_code", values.postal_code);
+    formData.append("country", values.country);
+    formData.append("lat", values.lat);
+    formData.append("lon", values.lon);
     formData.append("email", values.email);
     formData.append("phonenumber_farm", values.phonenumber_farm);
     formData.append("description", values.description);
@@ -168,92 +153,40 @@ function RegisterSeller() {
     formData.append("farm_type", values.farm_type);
 
     try {
-      const token = Cookies.get("login");
-      console.log("Token:", token);
-
-      if (!token) {
-        Swal.fire({
-          title: "Error",
-          text: "You are not authenticated. Please log in.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-        return;
-      }
-
       const response = await axios.post(
         "https://farmsdistribution-2664aad5e284.herokuapp.com/peternakan",
         formData,
         {
           headers: {
-            "Content-Type": "application/json",
             login: token,
+            "Content-Type": "multipart/form-data",
           },
         }
       );
 
-      if (response.status === 200) {
-        console.log("Farm registration successful:", response.data);
+      if (response.status === 200 || response.status === 201) {
         Swal.fire({
           title: "Success",
-          text: "Farm registration successful! Updating your role...",
+          text: response.data.message || "Farm registration successful! Redirecting...",
           icon: "success",
           confirmButtonText: "OK",
         });
-
-        // Update role to seller
-        await updateRoleToSeller(token, userId);
-
         window.location.href = "/dashboard";
       } else {
-        throw new Error(response.data.message || "Failed to register farm.");
+        Swal.fire({
+          title: "Error",
+          text: response.data.message || "Something went wrong!",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       }
     } catch (error) {
-      console.error(
-        "Error during registration:",
-        error.response?.data || error.message
-      );
       Swal.fire({
         title: "Error",
         text: error.response?.data?.message || "Something went wrong!",
         icon: "error",
         confirmButtonText: "OK",
       });
-    }
-  };
-
-  const updateRoleToSeller = async (token, userId) => {
-    try {
-      const response = await axios.put(
-        `http://localhost:8080/update/akun?id=${userId}`,
-        {
-          nama: values.name,
-          no_telp: values.phonenumber_farm,
-          email: values.email,
-          id_role: 11, // Role Penjual
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            login: token,
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        console.log(
-          "User role updated to Penjual successfully:",
-          response.data
-        );
-        Cookies.set("role", "Penjual", { expires: 7 });
-      } else {
-        console.error("Failed to update user role:", response.status);
-      }
-    } catch (error) {
-      console.error(
-        "Error updating role:",
-        error.response?.data || error.message
-      );
     }
   };
 
@@ -274,7 +207,7 @@ function RegisterSeller() {
           <input
             type="text"
             name="name"
-            placeholder="Nama Farm"
+            placeholder="Nama Farm (required)"
             value={values.name}
             onChange={handleInputChange}
           />
@@ -282,14 +215,14 @@ function RegisterSeller() {
             <input
               type="text"
               name="street"
-              placeholder="Jalan"
+              placeholder="Jalan (autofill)"
               value={values.street}
               readOnly
             />
             <input
               type="text"
               name="city"
-              placeholder="Kota"
+              placeholder="Kota (autofill)"
               value={values.city}
               readOnly
             />
@@ -298,14 +231,14 @@ function RegisterSeller() {
             <input
               type="text"
               name="state"
-              placeholder="Wilayah"
+              placeholder="Wilayah (autofill)"
               value={values.state}
               readOnly
             />
             <input
               type="text"
               name="postal_code"
-              placeholder="Kode Pos"
+              placeholder="Kode Pos (autofill)"
               value={values.postal_code}
               readOnly
             />
@@ -313,7 +246,7 @@ function RegisterSeller() {
           <input
             type="text"
             name="farm_type"
-            placeholder="Jenis Farm"
+            placeholder="Jenis Farm (required)"
             value={values.farm_type}
             onChange={handleInputChange}
             required
@@ -321,20 +254,20 @@ function RegisterSeller() {
           <input
             type="email"
             name="email"
-            placeholder="Email"
+            placeholder="Email (autofill)"
             value={values.email}
             readOnly
           />
           <input
             type="text"
             name="phonenumber_farm"
-            placeholder="Phone Number"
+            placeholder="Phone Number (autofill)"
             value={values.phonenumber_farm}
             readOnly
           />
           <textarea
             name="description"
-            placeholder="Deskripsi"
+            placeholder="Deskripsi (required)"
             value={values.description}
             onChange={handleInputChange}
           ></textarea>

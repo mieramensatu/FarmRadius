@@ -16,13 +16,16 @@ function Toko() {
     // Fungsi untuk fetch data toko
     const fetchFarms = async () => {
       try {
-        const response = await fetch("http://localhost:8080/all/peternak", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            login: token,
-          },
-        });
+        const response = await fetch(
+          "https://farmsdistribution-2664aad5e284.herokuapp.com/all/peternak",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              login: token,
+            },
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Failed to fetch farms");
@@ -41,7 +44,7 @@ function Toko() {
     fetchFarms();
   }, []);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (farm_id) => {
     const token = Cookies.get("login");
 
     Swal.fire({
@@ -55,9 +58,9 @@ function Toko() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          console.log("Attempting to delete farm with ID:", id);
+          console.log("Attempting to delete farm with farm_id:", farm_id);
           const response = await fetch(
-            `http://localhost:8080/product/delete?id=${id}`,
+            `https://farmsdistribution-2664aad5e284.herokuapp.com/peternakan/delete?id=${farm_id}`,
             {
               method: "DELETE",
               headers: {
@@ -73,7 +76,9 @@ function Toko() {
               title: "Deleted!",
               text: "The farm has been deleted.",
             });
-            setFarms((prevFarms) => prevFarms.filter((farm) => farm.id !== id)); 
+            setFarms((prevFarms) =>
+              prevFarms.filter((farm) => farm.farm_id !== farm_id)
+            );
           } else {
             const result = await response.json();
             console.error("Server response:", result);
@@ -118,7 +123,7 @@ function Toko() {
             </thead>
             <tbody>
               {farms.map((farm, index) => (
-                <tr key={farm.id}>
+                <tr key={farm.farm_id}>
                   <td>{index + 1}</td>
                   <td>
                     <img
@@ -134,7 +139,7 @@ function Toko() {
                   <td>
                     <button
                       className="delete-button"
-                      onClick={() => handleDelete(farm.id)}
+                      onClick={() => handleDelete(farm.farm_id)}
                     >
                       Delete
                     </button>
