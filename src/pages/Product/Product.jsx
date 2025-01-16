@@ -11,18 +11,33 @@ function Product() {
   const [cart, setCart] = useState([]);
   const token = Cookies.get("login");
 
-  // Load keranjang dari Local Storage saat komponen dimuat
   useEffect(() => {
-    const storedCart = localStorage.getItem("cart");
-    if (storedCart) {
-      setCart(JSON.parse(storedCart));
-    }
-  }, []);
+    if (token) {
+      const storedCart = localStorage.getItem(`cart_${token}`);
 
-  // Simpan keranjang ke Local Storage setiap kali keranjang berubah
+      if (storedCart) {
+        try {
+          const parsedCart = JSON.parse(storedCart);
+
+          if (Array.isArray(parsedCart) && parsedCart.length > 0) {
+            setCart(parsedCart); // Set state dengan data dari localStorage
+          } else {
+            console.warn("Data keranjang tidak valid atau kosong:", parsedCart);
+          }
+        } catch (error) {
+          console.error("Error parsing stored cart:", error);
+        }
+      }
+    } else {
+      console.warn("Token tidak ditemukan. Keranjang tidak dapat dipulihkan.");
+    }
+  }, [token]);
+
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
+    if (token) {
+      localStorage.setItem(`cart_${token}`, JSON.stringify(cart));
+    }
+  }, [cart, token]);
 
   const toggleCart = () => setIsCartVisible(!isCartVisible);
 
@@ -53,7 +68,6 @@ function Product() {
 
   const handleCheckout = async (orderData) => {
     try {
-      const token = Cookies.get("login");
       const response = await fetch(
         "https://farmsdistribution-2664aad5e284.herokuapp.com/order",
         {
@@ -72,7 +86,9 @@ function Product() {
 
       alert("Checkout berhasil!");
       setCart([]);
-      localStorage.removeItem("cart");
+      if (token) {
+        localStorage.removeItem(`cart_${token}`);
+      }
       setIsCartVisible(false);
     } catch (error) {
       console.error(error);
@@ -102,7 +118,7 @@ function Product() {
               <Order
                 cart={cart}
                 onUpdateQuantity={handleUpdateQuantity}
-                onCheckout={(orderData) =>
+                onCheckout={() =>
                   handleCheckout({
                     user_id: 1,
                     products: cart.map(({ id, quantity }) => ({
