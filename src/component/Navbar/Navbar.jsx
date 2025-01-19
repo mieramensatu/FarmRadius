@@ -50,10 +50,7 @@ function Navbar({ toggleCart }) {
       </div>
 
       <div className="nav-others">
-        <span
-          className="material-symbols-rounded"
-          onClick={toggleCart}
-        >
+        <span className="material-symbols-rounded" onClick={toggleCart}>
           local_mall
         </span>
 
@@ -66,9 +63,14 @@ function Navbar({ toggleCart }) {
         {isLoggedIn ? (
           <>
             {role === "Pembeli" && (
-              <Link to="/req-peternak">
-                <span className="material-symbols-outlined">sell</span>
-              </Link>
+              <>
+                <Link to="/req-peternak">
+                  <span className="material-symbols-outlined">sell</span>
+                </Link>
+                <Link to="/dashboard/payment">
+                  <span className="material-symbols-rounded">storefront</span>
+                </Link>
+              </>
             )}
             <div className="logout-section">
               <span

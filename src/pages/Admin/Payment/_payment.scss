@@ -1,0 +1,96 @@
+.payment-container {
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #333333;
+    }
+  
+    .payment-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: Arial, sans-serif;
+  
+      th,
+      td {
+        text-align: left;
+        padding: 12px;
+        font-size: 14px;
+      }
+  
+      th {
+        background-color: #f1f5f9;
+        color: #333333;
+        font-weight: bold;
+        border-bottom: 2px solid #e0e0e0;
+      }
+  
+      td {
+        border-bottom: 1px solid #e0e0e0;
+        color: #555555;
+      }
+  
+      tbody tr {
+        transition: background-color 0.3s;
+  
+        &:hover {
+          background-color: #f8fafc;
+        }
+      }
+    }
+  }
+  
+  .payment-product-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  
+    p {
+      margin: 0;
+      font-size: 13px;
+      color: #555555;
+    }
+  }
+  
+  .button-container {
+    display: flex;
+    gap: 10px;
+  
+    .update-button,
+    .delete-button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 25px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+  
+      &.update-button {
+        background: linear-gradient(90deg, #4caf50, #81c784);
+        color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+        &:hover {
+          background: linear-gradient(90deg, #388e3c, #66bb6a);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+      }
+  
+      &.delete-button {
+        background: linear-gradient(90deg, #f44336, #e57373);
+        color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+        &:hover {
+          background: linear-gradient(90deg, #d32f2f, #ef5350);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+      }
+    }
+  }
+  

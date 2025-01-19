@@ -33,7 +33,7 @@ function Dashboard({ children }) {
 
         const data = await response.json();
 
-        if (!data || data.length === 0) {
+        if (!data || data.data === null) {
           console.log("No data found, redirecting to /signup-seller...");
           navigate("/signup-seller");
         } else {
@@ -46,21 +46,6 @@ function Dashboard({ children }) {
         setLoading(false);
       }
     };
-
-    if (!getRole) {
-      console.log("Role belum tersedia, tunggu...");
-      return;
-    }
-
-    if (
-      getRole.toLowerCase() !== "admin" &&
-      getRole.toLowerCase() !== "penjual"
-    ) {
-      console.log("Redirecting due to invalid role:", getRole);
-      navigate("/");
-    } else {
-      fetchData();
-    }
   }, [getRole, navigate]);
 
   return (

@@ -51,7 +51,7 @@ function Productsection({ onAddToCart }) {
             />
             <div className="product-info">
               <h3 className="product-name">{product.name || "Tidak Diketahui"}</h3>
-              <p className="product-price">Rp {product.price_per_kg.toLocaleString()}/kg</p>
+              <p className="product-price">{product.price_per_kg.toLocaleString()}/kg</p>
               <p className="product-stock">Stok: {product.stock_kg || 0} kg</p>
               <p className="product-status">Status: {product.status_name || "N/A"}</p>
               <button

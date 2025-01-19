@@ -61,17 +61,21 @@ function Sidebar() {
         </div>
 
         <div className="navigation-nav">
-          <Link to="/dashboard" data-menu="dashboard" className="menu-item">
-            <i className="ph ph-gauge"></i>
-            <span>Dashboard</span>
-          </Link>
           {role === "admin" && (
             <>
+              <Link to="/dashboard" data-menu="dashboard" className="menu-item">
+                <i className="ph ph-gauge"></i>
+                <span>Dashboard</span>
+              </Link>
               <Link to="/dashboard/toko" data-menu="toko" className="menu-item">
                 <i className="ph ph-barn"></i>
                 <span>Toko Peternak</span>
               </Link>
-              <Link to="/dashboard/verifikasi" data-menu="verifikasi" className="menu-item">
+              <Link
+                to="/dashboard/verifikasi"
+                data-menu="verifikasi"
+                className="menu-item"
+              >
                 <i className="ph ph-user-check"></i>
                 <span>Verifikasi</span>
               </Link>
@@ -83,6 +87,10 @@ function Sidebar() {
           )}
           {role === "penjual" && (
             <>
+              <Link to="/dashboard" data-menu="dashboard" className="menu-item">
+                <i className="ph ph-gauge"></i>
+                <span>Dashboard</span>
+              </Link>
               <Link
                 to="/dashboard/product"
                 data-menu="product"
@@ -106,6 +114,18 @@ function Sidebar() {
               >
                 <i className="ph ph-cardholder"></i>
                 <span>Payment</span>
+              </Link>
+            </>
+          )}
+          {role === "pembeli" && (
+            <>
+              <Link
+                to="/dashboard/payment"
+                data-menu="product"
+                className="menu-item"
+              >
+                <i className="ph ph-storefront"></i>
+                <span>payment</span>
               </Link>
             </>
           )}
