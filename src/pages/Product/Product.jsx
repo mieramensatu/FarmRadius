@@ -20,7 +20,7 @@ function Product() {
           const parsedCart = JSON.parse(storedCart);
 
           if (Array.isArray(parsedCart) && parsedCart.length > 0) {
-            setCart(parsedCart); // Set state dengan data dari localStorage
+            setCart(parsedCart);
           } else {
             console.warn("Data keranjang tidak valid atau kosong:", parsedCart);
           }
@@ -66,7 +66,20 @@ function Product() {
     );
   };
 
-  const handleCheckout = async (orderData) => {
+  const handleCheckout = async (paymentMethod) => {
+    const orderData = {
+      user_id: 1,
+      products: cart.map(({ id, quantity }) => ({
+        product_id: id,
+        quantity,
+      })),
+      pengiriman_id: 3,
+      payment_method: paymentMethod,
+      time_order: 0.46,
+      distance_km: 0.27,
+      shipping_cost: 34.1,
+    };
+
     try {
       const response = await fetch(
         "https://farmsdistribution-2664aad5e284.herokuapp.com/order",
@@ -118,20 +131,7 @@ function Product() {
               <Order
                 cart={cart}
                 onUpdateQuantity={handleUpdateQuantity}
-                onCheckout={() =>
-                  handleCheckout({
-                    user_id: 1,
-                    products: cart.map(({ id, quantity }) => ({
-                      product_id: id,
-                      quantity,
-                    })),
-                    pengiriman_id: 3,
-                    payment_method: "Bank Transfer",
-                    time_order: 0.46,
-                    distance_km: 0.27,
-                    shipping_cost: 34.1,
-                  })
-                }
+                onCheckout={handleCheckout}
               />
             </div>
           )}
