@@ -8,8 +8,16 @@ function Order({ cart, onUpdateQuantity, onCheckout }) {
     setPaymentMethod(event.target.value);
   };
 
-  const handleCheckoutClick = () => {
-    onCheckout(paymentMethod);
+  const handleQuantityChange = (id, value, maxStock) => {
+    let newValue = parseInt(value, 10);
+
+    if (isNaN(newValue) || newValue < 1) {
+      newValue = 0;
+    } else if (newValue > maxStock) {
+      newValue = maxStock;
+    }
+
+    onUpdateQuantity(id, newValue);
   };
 
   return (
@@ -19,21 +27,15 @@ function Order({ cart, onUpdateQuantity, onCheckout }) {
         {cart.length === 0 ? (
           <li>Keranjang kosong</li>
         ) : (
-          cart.map((item, index) => (
-            <li key={index}>
+          cart.map((item) => (
+            <li key={item.id}>
               <div className="cart-item">
                 {item.name} - Rp {item.price_per_kg.toLocaleString()} x {item.quantity} kg
                 <div className="quantity-controls">
                   <button
                     className="button"
-                    style={{
-                      width: "20px",
-                      height: "20px",
-                      borderRadius: "50%",
-                      border: "transparent",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
+                    onClick={() => onUpdateQuantity(item.id, Math.max(item.quantity - 1, 0))}
+                    disabled={item.quantity <= 0} // Disable jika sudah 0
                   >
                     -
                   </button>
@@ -41,25 +43,19 @@ function Order({ cart, onUpdateQuantity, onCheckout }) {
                     className="input"
                     type="number"
                     value={item.quantity}
-                    readOnly
+                    min="0"
+                    max={item.stock_kg}
+                    onChange={(e) => handleQuantityChange(item.id, e.target.value, item.stock_kg)}
                     style={{
-                      width: "25px",
-                      margin: "0 5px",
-                      backgroundColor: "transparent",
-                      border: "none",
+                      width: "40px",
                       textAlign: "center",
+                      border: "1px solid #ccc",
                     }}
                   />
                   <button
                     className="button"
-                    style={{
-                      width: "20px",
-                      height: "20px",
-                      borderRadius: "50%",
-                      border: "transparent",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+                    onClick={() => onUpdateQuantity(item.id, Math.min(item.quantity + 1, item.stock_kg))}
+                    disabled={item.quantity >= item.stock_kg} // Disable jika sudah mencapai stok maksimum
                   >
                     +
                   </button>
@@ -71,16 +67,12 @@ function Order({ cart, onUpdateQuantity, onCheckout }) {
       </ul>
       <div className="payment-method">
         <label htmlFor="paymentMethod">Metode Pembayaran:</label>
-        <select
-          id="paymentMethod"
-          value={paymentMethod}
-          onChange={handlePaymentChange}
-        >
+        <select id="paymentMethod" value={paymentMethod} onChange={handlePaymentChange}>
           <option value="Bank Transfer">Bank Transfer</option>
           <option value="COD">Cash on Delivery (COD)</option>
         </select>
       </div>
-      <button className="checkout-button" onClick={handleCheckoutClick}>
+      <button className="checkout-button" onClick={() => onCheckout(paymentMethod)}>
         Checkout
       </button>
     </div>

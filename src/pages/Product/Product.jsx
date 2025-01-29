@@ -47,7 +47,9 @@ function Product() {
 
       if (existingProduct) {
         return prevCart.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
         );
       }
 
@@ -97,15 +99,53 @@ function Product() {
         throw new Error("Gagal melakukan checkout");
       }
 
+      // Perbarui stok produk secara lokal
+      setProducts((prevProducts) =>
+        prevProducts.map((product) => {
+          const orderedItem = cart.find((item) => item.id === product.id);
+          if (orderedItem) {
+            return {
+              ...product,
+              stock_kg: product.stock_kg - orderedItem.quantity,
+            };
+          }
+          return product;
+        })
+      );
+
       alert("Checkout berhasil!");
-      setCart([]);
-      if (token) {
-        localStorage.removeItem(`cart_${token}`);
-      }
-      setIsCartVisible(false);
+      setCart([]); // Kosongkan keranjang setelah checkout
+      localStorage.removeItem(`cart_${token}`); // Hapus keranjang dari localStorage
+
+      // Refresh daftar produk dari server untuk mendapatkan stok terbaru
+      fetchProducts();
     } catch (error) {
       console.error(error);
       alert("Checkout gagal: " + error.message);
+    }
+  };
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch(
+        "https://farmsdistribution-2664aad5e284.herokuapp.com/product",
+        {
+          method: "GET",
+          headers: {
+            login: token,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch products");
+      }
+
+      const data = await response.json();
+      setProducts(data.data || []);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      setProducts([]);
     }
   };
 
@@ -119,12 +159,15 @@ function Product() {
         <div className="listing-location">
           <div className="listing-location-title">Product Farm Radius</div>
           <div className="listing-location-desc">
-            Silahkan datang menuju lokasi kami bila Anda memerlukan sesuatu pada Farm Radius
+            Silahkan datang menuju lokasi kami bila Anda memerlukan sesuatu pada
+            Farm Radius
           </div>
         </div>
-        <div className={`product-wrapper ${isCartVisible ? "with-sidebar" : ""}`}>
+        <div
+          className={`product-wrapper ${isCartVisible ? "with-sidebar" : ""}`}
+        >
           <div className="product">
-            <Productsection onAddToCart={handleAddToCart} />
+            <Productsection onAddToCart={handleAddToCart} cart={cart} />
           </div>
           {isCartVisible && (
             <div className="order-sidebar">
