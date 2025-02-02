@@ -17,7 +17,7 @@ const attributions =
   '<a href="https://petapedia.github.io/" target="_blank">&copy; PetaPedia Indonesia</a>';
 const fallbackPlace = [107.57634352477324, -6.87436891415509];
 
-const MapComponent = () => {
+const MapComponent = ({ onSelectFarm }) => {
   const mapRef = useRef(null);
   const popupRef = useRef(null);
   const [mapInstance, setMapInstance] = useState(null);
@@ -73,7 +73,6 @@ const MapComponent = () => {
     const fetchAllPeternak = async () => {
       try {
         const token = Cookies.get("login");
-
         const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
         const response = await fetch(
@@ -122,6 +121,15 @@ const MapComponent = () => {
         );
 
         if (clickedFeature) {
+          const farmId = clickedFeature.get("id_farm"); // Ambil id_farm dari marker
+          console.log("🟢 Klik Marker dengan ID:", farmId);
+
+          if (farmId) {
+            console.log(`✅ Farm terpilih dengan ID: ${farmId}`);
+            if (onSelectFarm) {
+              onSelectFarm(farmId); // Kirim ke Product.js
+            }
+          }
           const coordinates = toLonLat(
             clickedFeature.getGeometry().getCoordinates()
           );
@@ -269,22 +277,61 @@ const MapComponent = () => {
   };
 
   const addPeternakMarkers = (peternakData) => {
+    console.log("🔍 Data Peternak:", peternakData);
+
+    if (!Array.isArray(peternakData) || peternakData.length === 0) {
+      console.warn("⚠️ Tidak ada data peternak yang diterima!");
+      return;
+    }
+
     peternakData.forEach((peternak) => {
-      const { nama, description, image_farm, latitude, longitude } = peternak;
+      const { farm_id, nama, description, image_farm, latitude, longitude } =
+        peternak;
+
+      if (!latitude || !longitude) {
+        console.warn(
+          `⚠️ Peternak ${nama} memiliki koordinat yang tidak valid!`
+        );
+        return;
+      }
+
       const coordinate = fromLonLat([
         parseFloat(latitude),
         parseFloat(longitude),
       ]);
-      addMarker(coordinate, { nama, description, image_farm });
+
+      const marker = new Feature({
+        geometry: new Point(coordinate),
+      });
+
+      marker.setProperties({
+        id_farm: farm_id,
+        nama,
+        description,
+        image_farm,
+      });
+
+      markerSource.addFeature(marker);
+      console.log("📍 Marker ditambahkan:", { id_farm: farm_id, nama });
     });
+
+    console.log(
+      "✅ Marker berhasil ditambahkan:",
+      markerSource.getFeatures().length
+    );
   };
 
   const addMarker = (coordinate, properties) => {
     const marker = new Feature({
       geometry: new Point(coordinate),
-      ...properties,
     });
+
+    // Pastikan id_farm tersimpan dengan benar
+    marker.setProperties(properties);
+
     markerSource.addFeature(marker);
+    console.log("📍 Marker ditambahkan:", properties);
+
     return marker;
   };
 

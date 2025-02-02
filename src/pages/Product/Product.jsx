@@ -9,16 +9,16 @@ import Cookies from "js-cookie";
 function Product() {
   const [isCartVisible, setIsCartVisible] = useState(false);
   const [cart, setCart] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [selectedFarmId, setSelectedFarmId] = useState(null);
   const token = Cookies.get("login");
 
   useEffect(() => {
     if (token) {
       const storedCart = localStorage.getItem(`cart_${token}`);
-
       if (storedCart) {
         try {
           const parsedCart = JSON.parse(storedCart);
-
           if (Array.isArray(parsedCart) && parsedCart.length > 0) {
             setCart(parsedCart);
           } else {
@@ -44,7 +44,6 @@ function Product() {
   const handleAddToCart = (product) => {
     setCart((prevCart) => {
       const existingProduct = prevCart.find((item) => item.id === product.id);
-
       if (existingProduct) {
         return prevCart.map((item) =>
           item.id === product.id
@@ -52,7 +51,6 @@ function Product() {
             : item
         );
       }
-
       return [...prevCart, { ...product, quantity: 1 }];
     });
     setIsCartVisible(true);
@@ -100,7 +98,7 @@ function Product() {
       }
 
       alert("Checkout berhasil!");
-      setCart([]); // Hapus keranjang setelah checkout berhasil
+      setCart([]);
       if (token) {
         localStorage.removeItem(`cart_${token}`);
       }
@@ -111,23 +109,21 @@ function Product() {
     }
   };
 
-  const fetchProducts = async () => {
+  const fetchProductsByFarm = async (farmId) => {
     try {
+      console.log(`🔍 Fetching products for Farm ID: ${farmId}`);
+      setSelectedFarmId(farmId); // Simpan ID farm yang dipilih
+
       const response = await fetch(
-        "https://farmsdistribution-2664aad5e284.herokuapp.com/product",
-        {
-          method: "GET",
-          headers: {
-            login: token,
-          },
-        }
+        `https://farmsdistribution-2664aad5e284.herokuapp.com/product/farm?id_farm=${farmId}`
       );
 
       if (!response.ok) {
-        throw new Error("Failed to fetch products");
+        throw new Error("Gagal mengambil produk");
       }
 
       const data = await response.json();
+      console.log("📦 Produk yang diterima:", data.data);
       setProducts(data.data || []);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -140,7 +136,7 @@ function Product() {
       <Navbar toggleCart={toggleCart} />
       <div className="listing">
         <div className="listing-map">
-          <MyComponent />
+          <MyComponent onSelectFarm={fetchProductsByFarm} />
         </div>
         <div className="listing-location">
           <div className="listing-location-title">Product Farm Radius</div>
@@ -153,7 +149,12 @@ function Product() {
           className={`product-wrapper ${isCartVisible ? "with-sidebar" : ""}`}
         >
           <div className="product">
-            <Productsection onAddToCart={handleAddToCart} cart={cart} />
+            <Productsection
+              onAddToCart={handleAddToCart}
+              cart={cart}
+              products={products}
+              selectedFarmId={selectedFarmId}
+            />
           </div>
           {isCartVisible && (
             <div className="order-sidebar">

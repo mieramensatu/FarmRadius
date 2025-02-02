@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import "./_productsection.scss";
 
-function Productsection({ onAddToCart, cart = [] }) { // Tambahkan default cart = []
-  const [products, setProducts] = useState([]);
+function Productsection({ onAddToCart, cart = [], selectedFarmId }) { 
+  const [allProducts, setAllProducts] = useState([]); // Semua produk
+  const [filteredProducts, setFilteredProducts] = useState([]); // Produk yang difilter
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -11,8 +12,10 @@ function Productsection({ onAddToCart, cart = [] }) { // Tambahkan default cart 
 
     const fetchProducts = async () => {
       try {
+        console.log("🔍 Fetching all products...");
+
         const response = await fetch(
-          "https://farmsdistribution-2664aad5e284.herokuapp.com/product",
+          `https://farmsdistribution-2664aad5e284.herokuapp.com/product`,
           {
             method: "GET",
             headers: {
@@ -26,11 +29,15 @@ function Productsection({ onAddToCart, cart = [] }) { // Tambahkan default cart 
         }
 
         const data = await response.json();
-        setProducts(data.data || []); // Tambahkan nilai default []
+        console.log("📦 Semua produk yang diterima:", data.data);
+
+        setAllProducts(data.data || []); 
+        setFilteredProducts(data.data || []); // Tampilkan semua produk di awal
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching products:", error);
-        setProducts([]); // Set nilai kosong jika error terjadi
+        console.error("❌ Error fetching products:", error);
+        setAllProducts([]); 
+        setFilteredProducts([]);
         setLoading(false);
       }
     };
@@ -38,13 +45,26 @@ function Productsection({ onAddToCart, cart = [] }) { // Tambahkan default cart 
     fetchProducts();
   }, []);
 
+  useEffect(() => {
+    if (selectedFarmId) {
+      console.log(`🔍 Menampilkan produk untuk Farm ID: ${selectedFarmId}`);
+      const filtered = allProducts.filter(product => product.farm_id === selectedFarmId);
+      setFilteredProducts(filtered);
+    } else {
+      setFilteredProducts(allProducts);
+    }
+  }, [selectedFarmId, allProducts]); // Filter produk saat `selectedFarmId` berubah
+
   return (
     <div className="listing-product">
+
       {loading ? (
         <p>Loading...</p>
+      ) : filteredProducts.length === 0 ? (
+        <p>🚫 Tidak ada produk yang tersedia untuk farm ini.</p>
       ) : (
-        (products || []).map((product) => { // Pastikan products bukan undefined
-          const cartItem = cart.find((item) => item.id === product.id) || {}; // Pastikan cartItem ada
+        filteredProducts.map((product) => {
+          const cartItem = cart.find((item) => item.id === product.id) || {}; 
           const currentQuantity = cartItem.quantity || 0;
           const isOutOfStock = currentQuantity >= (product.stock_kg || 0);
 

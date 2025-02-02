@@ -7,13 +7,32 @@ import Cookies from "js-cookie";
 
 function Dashboard({ children }) {
   const navigate = useNavigate();
-  const { getRole } = DecodeRole();
-  const [setLoading] = useState(true);
+  const { getRole } = DecodeRole(); // Menggunakan destructuring sesuai DecodeRole yang ada
+  const [role, setRole] = useState("");
+  const [loading, setLoading] = useState(true);
   const token = Cookies.get("login");
+
+  useEffect(() => {
+    if (getRole) {
+      setRole(getRole);
+    }
+  }, [getRole]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        if (role === "Admin") {
+          console.log("Admin role detected, granting access to dashboard.");
+          setLoading(false);
+          return;
+        }
+
+        if (!token) {
+          console.log("No token found, redirecting to login...");
+          navigate("/login");
+          return;
+        }
+
         const response = await fetch(
           "https://farmsdistribution-2664aad5e284.herokuapp.com/peternakan/get",
           {
@@ -46,8 +65,15 @@ function Dashboard({ children }) {
         setLoading(false);
       }
     };
-    fetchData();
-  }, [getRole, navigate, token]);
+
+    if (role) {
+      fetchData();
+    }
+  }, [role, navigate, token]);
+
+  if (loading) {
+    return ;
+  }
 
   return (
     <div className="dashboard">
