@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../component/Sidebar/Sidebar";
 import Topbar from "../../component/Topbar/Topbar";
@@ -8,10 +8,10 @@ import Cookies from "js-cookie";
 function Dashboard({ children }) {
   const navigate = useNavigate();
   const { getRole } = DecodeRole();
-  const [setLoading] = React.useState(true);
+  const [setLoading] = useState(true);
   const token = Cookies.get("login");
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(
@@ -46,7 +46,8 @@ function Dashboard({ children }) {
         setLoading(false);
       }
     };
-  }, [getRole, navigate]);
+    fetchData();
+  }, [getRole, navigate, token]);
 
   return (
     <div className="dashboard">

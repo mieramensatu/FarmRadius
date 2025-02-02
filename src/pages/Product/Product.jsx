@@ -99,26 +99,12 @@ function Product() {
         throw new Error("Gagal melakukan checkout");
       }
 
-      // Perbarui stok produk secara lokal
-      setProducts((prevProducts) =>
-        prevProducts.map((product) => {
-          const orderedItem = cart.find((item) => item.id === product.id);
-          if (orderedItem) {
-            return {
-              ...product,
-              stock_kg: product.stock_kg - orderedItem.quantity,
-            };
-          }
-          return product;
-        })
-      );
-
       alert("Checkout berhasil!");
-      setCart([]); // Kosongkan keranjang setelah checkout
-      localStorage.removeItem(`cart_${token}`); // Hapus keranjang dari localStorage
-
-      // Refresh daftar produk dari server untuk mendapatkan stok terbaru
-      fetchProducts();
+      setCart([]); // Hapus keranjang setelah checkout berhasil
+      if (token) {
+        localStorage.removeItem(`cart_${token}`);
+      }
+      setIsCartVisible(false);
     } catch (error) {
       console.error(error);
       alert("Checkout gagal: " + error.message);
