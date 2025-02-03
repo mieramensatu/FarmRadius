@@ -45,105 +45,113 @@
       &:hover {
         background-color: #f8fafc;
       }
-    }
 
-    .update-button,
-    .delete-button {
-      padding: 1vh 1vh;
-      border: none;
-      border-radius: 25px;
-      font-size: 12px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s;
-
-      &.update-button {
-        background: linear-gradient(90deg, #4caf50, #81c784);
-        color: white;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-        &:hover {
-          background: linear-gradient(90deg, #388e3c, #66bb6a);
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-      }
-
-      &.delete-button {
-        background: linear-gradient(90deg, #f44336, #e57373);
-        color: white;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-        &:hover {
-          background: linear-gradient(90deg, #d32f2f, #ef5350);
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-      }
-    }
-  }
-}
-
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); // Overlay effect
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-
-  .modal-content {
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 400px;
-
-    h2 {
-      margin-bottom: 20px;
-      font-size: 20px;
-      color: #333;
-    }
-
-    select {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 20px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      font-size: 14px;
-    }
-
-    .modal-actions {
-      display: flex;
-      justify-content: space-between;
-
-      button {
-        padding: 10px 20px;
-        border: none;
+      .proof-image {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
         border-radius: 5px;
-        font-size: 14px;
+        border: 1px solid #ddd;
+      }
+
+      .update-button,
+      .delete-button {
+        padding: 1vh 1vh;
+        border: none;
+        border-radius: 25px;
+        font-size: 12px;
+        font-weight: bold;
         cursor: pointer;
-        transition: background 0.3s;
+        transition: all 0.3s;
 
         &.update-button {
-          background-color: #4caf50;
-          color: #fff;
+          background: linear-gradient(90deg, #4caf50, #81c784);
+          color: white;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
           &:hover {
-            background-color: #45a049;
+            background: linear-gradient(90deg, #388e3c, #66bb6a);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
           }
         }
 
         &.delete-button {
-          background-color: #f44336;
-          color: #fff;
+          background: linear-gradient(90deg, #f44336, #e57373);
+          color: white;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
           &:hover {
-            background-color: #e53935;
+            background: linear-gradient(90deg, #d32f2f, #ef5350);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+          }
+        }
+      }
+    }
+  }
+
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); // Overlay effect
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+
+    .modal-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 400px;
+
+      h2 {
+        margin-bottom: 20px;
+        font-size: 20px;
+        color: #333;
+      }
+
+      select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+      }
+
+      .modal-actions {
+        display: flex;
+        justify-content: space-between;
+
+        button {
+          padding: 10px 20px;
+          border: none;
+          border-radius: 5px;
+          font-size: 14px;
+          cursor: pointer;
+          transition: background 0.3s;
+
+          &.update-button {
+            background-color: #4caf50;
+            color: #fff;
+
+            &:hover {
+              background-color: #45a049;
+            }
+          }
+
+          &.delete-button {
+            background-color: #f44336;
+            color: #fff;
+
+            &:hover {
+              background-color: #e53935;
+            }
           }
         }
       }

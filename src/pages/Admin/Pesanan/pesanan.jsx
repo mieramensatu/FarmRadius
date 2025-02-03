@@ -35,19 +35,25 @@ function Pesanan() {
           invoice_number: item.invoice_number,
           nama_pembeli: item.nama_pembeli,
           no_telp: item.no_telp,
+          proof_of_transfer: item.proof_of_transfer,
           products: item.products.map((product) => ({
             created_at: product.created_at,
             order_id: product.order_id,
             product_id: product.product_id,
             quantity: product.quantity,
-            status: product.status,
+            status: product.status || "Pending", // Gunakan status dari API atau default "Pending"
             total_harga: product.total_harga,
             updated_at: product.updated_at,
           })),
           total_amount: item.total_amount,
         }));
 
-        setOrders(formattedData);
+        // Urutkan data berdasarkan invoice_number dari terkecil ke terbesar
+        const sortedData = formattedData.sort((a, b) => {
+          return Number(a.invoice_number) - Number(b.invoice_number);
+        });
+
+        setOrders(sortedData);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -84,7 +90,13 @@ function Pesanan() {
       setOrders((prevOrders) =>
         prevOrders.map((order) =>
           order.invoice_id === editingOrder.invoice_id
-            ? { ...order, products: order.products.map((product) => ({ ...product, status: newStatus })) }
+            ? {
+                ...order,
+                products: order.products.map((product) => ({
+                  ...product,
+                  status: newStatus,
+                })),
+              }
             : order
         )
       );
@@ -99,11 +111,11 @@ function Pesanan() {
   const deleteOrder = async (orderId) => {
     try {
       const response = await fetch(
-        `https://farmsdistribution-2664aad5e284.herokuapp.com/order/delete?order_id=${orderId}`,
+        `https://farmsdistribution-2664aad5e284.herokuapp.com/order/delete?order_id=${orderId}`, // Gunakan order_id sebagai parameter
         {
           method: "DELETE",
           headers: {
-            login: token,
+            login: token, // Tambahkan header login dengan nilai token
           },
         }
       );
@@ -112,7 +124,10 @@ function Pesanan() {
         throw new Error("Failed to delete order");
       }
 
-      setOrders((prevOrders) => prevOrders.filter((order) => order.invoice_id !== orderId));
+      // Hapus order dari state jika penghapusan berhasil
+      setOrders((prevOrders) =>
+        prevOrders.filter((order) => order.invoice_id !== orderId)
+      );
     } catch (error) {
       console.error("Error deleting order:", error);
     }
@@ -137,6 +152,7 @@ function Pesanan() {
                 <th>No. Telp</th>
                 <th>Produk</th>
                 <th>Total Amount</th>
+                <th>Proof of Transfer</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
@@ -160,8 +176,27 @@ function Pesanan() {
                   </td>
                   <td>{order.total_amount}</td>
                   <td>
-                    {order.products[0].status}
+                    {order.proof_of_transfer ? (
+                      <a
+                        href={`https://raw.githubusercontent.com/Ayala-crea/proof_of_transfer/main/${order.proof_of_transfer
+                          .split("/")
+                          .pop()}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <img
+                          src={`https://raw.githubusercontent.com/Ayala-crea/proof_of_transfer/main/${order.proof_of_transfer
+                            .split("/")
+                            .pop()}`}
+                          alt="Proof of Transfer"
+                          className="proof-image"
+                        />
+                      </a>
+                    ) : (
+                      "Not Uploaded"
+                    )}
                   </td>
+                  <td>{order.products[0].status}</td>
                   <td>
                     <button
                       onClick={() => {
@@ -173,7 +208,7 @@ function Pesanan() {
                       Update Status
                     </button>
                     <button
-                      onClick={() => deleteOrder(order.invoice_id)}
+                      onClick={() => deleteOrder(order.invoice_id)} // Pass order.invoice_id sebagai orderId
                       className="delete-button"
                     >
                       Delete Order
@@ -202,7 +237,10 @@ function Pesanan() {
                 <button onClick={updateStatus} className="update-button">
                   Save
                 </button>
-                <button onClick={() => setEditingOrder(null)} className="delete-button">
+                <button
+                  onClick={() => setEditingOrder(null)}
+                  className="delete-button"
+                >
                   Cancel
                 </button>
               </div>
