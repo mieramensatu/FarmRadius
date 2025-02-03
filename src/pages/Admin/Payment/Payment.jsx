@@ -6,6 +6,7 @@ import "./_payment.scss"; // Import SCSS untuk styling
 function Payment() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [file, setFile] = useState(null);
   const token = Cookies.get("login");
 
   useEffect(() => {
@@ -33,6 +34,7 @@ function Payment() {
           invoice_number: item.invoice_number,
           issued_date: item.issued_date,
           payment_method: item.payment_method,
+          proof_of_transfer: item.proof_of_transfer,
           products: item.products.map((product) => ({
             created_at: product.created_at,
             order_id: product.order_id,
@@ -58,6 +60,34 @@ function Payment() {
     fetchOrders();
   }, [token]);
 
+  const handleFileUpload = async (invoiceId) => {
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await fetch(
+        `https://farmsdistribution-2664aad5e284.herokuapp.com/order/bukti-transfer?id_invoice=${invoiceId}`,
+        {
+          method: "POST",
+          headers: {
+            login: token,
+          },
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to upload proof of transfer");
+      }
+
+      alert("Proof of transfer uploaded successfully!");
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  };
+
   return (
     <Dashboard>
       <div className="payment-container">
@@ -73,6 +103,8 @@ function Payment() {
                 <th>Due Date</th>
                 <th>Issued Date</th>
                 <th>Payment Method</th>
+                <th>Proof of Transfer</th>
+                <th>Upload Proof</th>
                 <th>Products</th>
                 <th>Total Amount</th>
               </tr>
@@ -85,6 +117,36 @@ function Payment() {
                   <td>{new Date(order.due_date).toLocaleDateString()}</td>
                   <td>{new Date(order.issued_date).toLocaleDateString()}</td>
                   <td>{order.payment_method}</td>
+                  <td>
+                    {order.proof_of_transfer ? (
+                      <a
+                        href={`https://raw.githubusercontent.com/Ayala-crea/proof_of_transfer/main/${order.proof_of_transfer}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <img
+                          src={`https://raw.githubusercontent.com/Ayala-crea/proof_of_transfer/main/${order.proof_of_transfer}`}
+                          alt="Proof of Transfer"
+                          style={{
+                            width: "100px",
+                            height: "100px",
+                            objectFit: "cover",
+                          }}
+                        />
+                      </a>
+                    ) : (
+                      "Not Uploaded"
+                    )}
+                  </td>
+                  <td>
+                    <input
+                      type="file"
+                      onChange={(e) => setFile(e.target.files[0])}
+                    />
+                    <button onClick={() => handleFileUpload(order.invoice_id)}>
+                      Upload
+                    </button>
+                  </td>
                   <td>
                     {order.products.map((product) => (
                       <div key={product.order_id}>

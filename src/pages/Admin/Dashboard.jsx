@@ -7,7 +7,7 @@ import Cookies from "js-cookie";
 
 function Dashboard({ children }) {
   const navigate = useNavigate();
-  const { getRole } = DecodeRole(); // Menggunakan destructuring sesuai DecodeRole yang ada
+  const { getRole } = DecodeRole();
   const [role, setRole] = useState("");
   const [loading, setLoading] = useState(true);
   const token = Cookies.get("login");
@@ -21,15 +21,16 @@ function Dashboard({ children }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (role === "Admin") {
-          console.log("Admin role detected, granting access to dashboard.");
-          setLoading(false);
-          return;
-        }
-
         if (!token) {
           console.log("No token found, redirecting to login...");
           navigate("/login");
+          return;
+        }
+
+        // Admin dan Penjual langsung bisa akses dashboard
+        if (role === "Admin" || role === "Pembeli") {
+          console.log("Authorized role detected, granting access to dashboard.");
+          setLoading(false);
           return;
         }
 
@@ -72,7 +73,7 @@ function Dashboard({ children }) {
   }, [role, navigate, token]);
 
   if (loading) {
-    return ;
+    return <div>Loading...</div>; 
   }
 
   return (
