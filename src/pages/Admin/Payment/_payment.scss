@@ -1,96 +1,89 @@
 .payment-container {
-    padding: 20px;
-    border-radius: 8px;
-    background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  
-    h1 {
-      font-size: 24px;
-      margin-bottom: 20px;
-      color: #333333;
-    }
-  
-    .payment-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-family: Arial, sans-serif;
-  
-      th,
-      td {
-        text-align: left;
-        padding: 12px;
-        font-size: 14px;
-      }
-  
-      th {
-        background-color: #f1f5f9;
-        color: #333333;
-        font-weight: bold;
-        border-bottom: 2px solid #e0e0e0;
-      }
-  
-      td {
-        border-bottom: 1px solid #e0e0e0;
-        color: #555555;
-      }
-  
-      tbody tr {
-        transition: background-color 0.3s;
-  
-        &:hover {
-          background-color: #f8fafc;
-        }
-      }
-    }
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333333;
+    text-align: center;
   }
-  
-  .payment-product-details {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  
-    p {
-      margin: 0;
-      font-size: 13px;
+
+  .payment-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+
+    th,
+    td {
+      text-align: left;
+      padding: 12px;
+      font-size: 14px;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      color: #333333;
+      font-weight: bold;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    td {
+      border-bottom: 1px solid #e0e0e0;
       color: #555555;
     }
-  }
-  
-  .button-container {
-    display: flex;
-    gap: 10px;
-  
-    .update-button,
-    .delete-button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 25px;
-      font-size: 12px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s;
-  
-      &.update-button {
-        background: linear-gradient(90deg, #4caf50, #81c784);
-        color: white;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  
-        &:hover {
-          background: linear-gradient(90deg, #388e3c, #66bb6a);
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
+
+    tbody tr {
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: #f8fafc;
       }
-  
-      &.delete-button {
-        background: linear-gradient(90deg, #f44336, #e57373);
-        color: white;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  
-        &:hover {
-          background: linear-gradient(90deg, #d32f2f, #ef5350);
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
+    }
+
+    .proof-image {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+    }
+
+    a {
+      display: inline-block;
+      text-decoration: none;
+      color: #007bff;
+      font-weight: bold;
+      transition: color 0.3s;
+
+      &:hover {
+        color: #0056b3;
       }
     }
   }
-  
+
+  .file-input {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  .update-button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    background: linear-gradient(90deg, #4caf50, #81c784);
+    color: white;
+    transition: all 0.3s;
+
+    &:hover {
+      background: linear-gradient(90deg, #388e3c, #66bb6a);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+  }
+}

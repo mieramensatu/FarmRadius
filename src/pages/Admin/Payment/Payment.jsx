@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Dashboard from "../Dashboard";
 import Cookies from "js-cookie";
+import Swal from "sweetalert2";
 import "./_payment.scss"; // Import SCSS untuk styling
 
 function Payment() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [file, setFile] = useState(null);
   const token = Cookies.get("login");
 
   useEffect(() => {
@@ -42,7 +42,7 @@ function Payment() {
             product_name: product.product_name,
             price_per_kg: product.price_per_kg,
             quantity: product.quantity,
-            status: product.status,
+            status: item.proof_of_transfer ? "Sending" : "Pending",
             total_harga: product.total_harga,
             updated_at: product.updated_at,
           })),
@@ -61,31 +61,84 @@ function Payment() {
   }, [token]);
 
   const handleFileUpload = async (invoiceId) => {
-    if (!file) return;
+    setOrders((prevOrders) =>
+      prevOrders.map((order) =>
+        order.invoice_id === invoiceId
+          ? {
+              ...order,
+              products: order.products.map((p) => ({
+                ...p,
+                status: "Sending",
+              })),
+            }
+          : order
+      )
+    );
 
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const response = await fetch(
-        `https://farmsdistribution-2664aad5e284.herokuapp.com/order/bukti-transfer?id_invoice=${invoiceId}`,
-        {
-          method: "POST",
-          headers: {
-            login: token,
-          },
-          body: formData,
+    Swal.fire({
+      title: "Upload Proof of Transfer",
+      input: "file",
+      inputAttributes: {
+        accept: "image/*",
+        "aria-label": "Upload your proof of transfer",
+      },
+      showCancelButton: true,
+      confirmButtonText: "Upload",
+      showLoaderOnConfirm: true,
+      preConfirm: (file) => {
+        if (!file) {
+          Swal.showValidationMessage("Please select an image");
+          return;
         }
-      );
 
-      if (!response.ok) {
-        throw new Error("Failed to upload proof of transfer");
+        const formData = new FormData();
+        formData.append("bukti_transfer", file);
+
+        return fetch(
+          `https://farmsdistribution-2664aad5e284.herokuapp.com/order/bukti-transfer?id_invoice=${invoiceId}`,
+          {
+            method: "PUT",
+            headers: {
+              login: token,
+            },
+            body: formData,
+          }
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status !== "success") {
+              throw new Error(data.message || "Upload failed");
+            }
+            return data;
+          })
+          .catch((error) => {
+            Swal.showValidationMessage(`Request failed: ${error}`);
+          });
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setOrders((prevOrders) =>
+          prevOrders.map((order) =>
+            order.invoice_id === invoiceId
+              ? {
+                  ...order,
+                  products: order.products.map((p) => ({
+                    ...p,
+                    status: "Complete",
+                  })),
+                }
+              : order
+          )
+        );
+
+        Swal.fire({
+          icon: "success",
+          title: "Upload Successful",
+          text: "Proof of transfer uploaded successfully!",
+        });
       }
-
-      alert("Proof of transfer uploaded successfully!");
-    } catch (error) {
-      console.error("Error uploading file:", error);
-    }
+    });
   };
 
   return (
@@ -104,9 +157,9 @@ function Payment() {
                 <th>Issued Date</th>
                 <th>Payment Method</th>
                 <th>Proof of Transfer</th>
-                <th>Upload Proof</th>
                 <th>Products</th>
                 <th>Total Amount</th>
+                <th>Upload Proof</th>
               </tr>
             </thead>
             <tbody>
@@ -120,32 +173,23 @@ function Payment() {
                   <td>
                     {order.proof_of_transfer ? (
                       <a
-                        href={`https://raw.githubusercontent.com/Ayala-crea/proof_of_transfer/main/${order.proof_of_transfer}`}
+                        href={`https://raw.githubusercontent.com/Ayala-crea/proof_of_transfer/main/${order.proof_of_transfer
+                          .split("/")
+                          .pop()}`}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
                         <img
-                          src={`https://raw.githubusercontent.com/Ayala-crea/proof_of_transfer/main/${order.proof_of_transfer}`}
+                          src={`https://raw.githubusercontent.com/Ayala-crea/proof_of_transfer/main/${order.proof_of_transfer
+                            .split("/")
+                            .pop()}`}
                           alt="Proof of Transfer"
-                          style={{
-                            width: "100px",
-                            height: "100px",
-                            objectFit: "cover",
-                          }}
+                          className="proof-image"
                         />
                       </a>
                     ) : (
                       "Not Uploaded"
                     )}
-                  </td>
-                  <td>
-                    <input
-                      type="file"
-                      onChange={(e) => setFile(e.target.files[0])}
-                    />
-                    <button onClick={() => handleFileUpload(order.invoice_id)}>
-                      Upload
-                    </button>
                   </td>
                   <td>
                     {order.products.map((product) => (
@@ -158,6 +202,15 @@ function Payment() {
                     ))}
                   </td>
                   <td>{order.total_amount}</td>
+                  <td>
+                    <button
+                      className="update-button"
+                      onClick={() => handleFileUpload(order.invoice_id)}
+                      disabled={order.proof_of_transfer}
+                    >
+                      Upload
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -53,7 +53,7 @@ function Productsection({ onAddToCart, cart = [], selectedFarmId }) {
     } else {
       setFilteredProducts(allProducts);
     }
-  }, [selectedFarmId, allProducts]); // Filter produk saat `selectedFarmId` berubah
+  }, [selectedFarmId, allProducts]);
 
   return (
     <div className="listing-product">
