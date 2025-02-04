@@ -239,6 +239,7 @@ function UpdateProduct() {
             >
               <option value="Tersedia">Tersedia</option>
               <option value="Tidak Tersedia">Tidak Tersedia</option>
+              <option value="Po">Po</option>
             </select>
           </div>
           <div className="form-group">

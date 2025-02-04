@@ -146,6 +146,8 @@ function PeternakProduct() {
                       className={`status-label ${
                         product.status_name === "Tersedia"
                           ? "available"
+                          : product.status_name === "Po"
+                          ? "pre-order"
                           : "on-hold"
                       }`}
                     >
