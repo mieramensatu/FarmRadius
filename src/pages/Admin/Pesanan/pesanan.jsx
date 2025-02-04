@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Dashboard from "../Dashboard";
 import Cookies from "js-cookie";
 import "./_allorder.scss"; // Import SCSS untuk styling
+import Swal from "sweetalert2";
 
 function Pesanan() {
   const [orders, setOrders] = useState([]);
@@ -41,14 +42,13 @@ function Pesanan() {
             order_id: product.order_id,
             product_id: product.product_id,
             quantity: product.quantity,
-            status: product.status || "Pending", // Gunakan status dari API atau default "Pending"
+            status: product.status || "Pending",
             total_harga: product.total_harga,
             updated_at: product.updated_at,
           })),
           total_amount: item.total_amount,
         }));
 
-        // Urutkan data berdasarkan invoice_number dari terkecil ke terbesar
         const sortedData = formattedData.sort((a, b) => {
           return Number(a.invoice_number) - Number(b.invoice_number);
         });
@@ -109,27 +109,63 @@ function Pesanan() {
   };
 
   const deleteOrder = async (orderId) => {
+    // Tampilkan konfirmasi sebelum menghapus
+    const confirmDelete = await Swal.fire({
+      title: "Are you sure?",
+      text: "This order will be permanently deleted!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (!confirmDelete.isConfirmed) {
+      return; // Batalkan jika user memilih "Cancel"
+    }
+
     try {
       const response = await fetch(
-        `https://farmsdistribution-2664aad5e284.herokuapp.com/order/delete?order_id=${orderId}`, // Gunakan order_id sebagai parameter
+        "https://farmsdistribution-2664aad5e284.herokuapp.com/order/delete",
         {
           method: "DELETE",
           headers: {
-            login: token, // Tambahkan header login dengan nilai token
+            "Content-Type": "application/json",
+            login: token, // Pastikan token dikirim dengan benar
           },
+          body: JSON.stringify({ invoice_id: orderId }), // Kirim invoice_id dalam body request
         }
       );
 
       if (!response.ok) {
-        throw new Error("Failed to delete order");
+        const errorMessage = await response.text();
+        throw new Error(errorMessage);
       }
 
-      // Hapus order dari state jika penghapusan berhasil
+      // Jika berhasil, hapus order dari state
       setOrders((prevOrders) =>
         prevOrders.filter((order) => order.invoice_id !== orderId)
       );
+
+      // Tampilkan notifikasi sukses
+      Swal.fire({
+        title: "Deleted!",
+        text: `Order ${orderId} has been deleted.`,
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+
+      console.log(`Order ${orderId} deleted successfully`);
     } catch (error) {
-      console.error("Error deleting order:", error);
+      console.error("Error deleting order:", error.message);
+
+      // Tampilkan notifikasi error
+      Swal.fire({
+        title: "Error!",
+        text: error.message,
+        icon: "error",
+      });
     }
   };
 
