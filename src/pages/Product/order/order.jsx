@@ -1,24 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./_order.scss";
 
-function Order({ cart, onUpdateQuantity, onCheckout }) {
+function Order({
+  cart,
+  onUpdateQuantity,
+  onCheckout,
+  routeInfo,
+  alamatPengirim,
+  alamatPenerima,
+}) {
   const [paymentMethod, setPaymentMethod] = useState("Bank Transfer");
 
-  const handlePaymentChange = (event) => {
-    setPaymentMethod(event.target.value);
-  };
+  // Lokasi Toko (Koordinat Tetap)
+  const tokoLongitude = 107.5784;
+  const tokoLatitude = -6.8748;
+  const [locationPengirim, setLocationPengirim] = useState([
+    tokoLongitude,
+    tokoLatitude,
+  ]);
 
-  const handleQuantityChange = (id, value, maxStock) => {
-    let newValue = parseInt(value, 10);
+  const [locationPenerima, setLocationPenerima] = useState([0, 0]);
 
-    if (isNaN(newValue) || newValue < 1) {
-      newValue = 0;
-    } else if (newValue > maxStock) {
-      newValue = maxStock;
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setLocationPenerima([longitude, latitude]);
+        },
+        (error) => {
+          console.error("❌ Gagal mendapatkan lokasi pengguna:", error);
+        }
+      );
     }
-
-    onUpdateQuantity(id, newValue);
-  };
+  }, []);
 
   return (
     <div className="order-sidebar-content">
@@ -30,12 +45,15 @@ function Order({ cart, onUpdateQuantity, onCheckout }) {
           cart.map((item) => (
             <li key={item.id}>
               <div className="cart-item">
-                {item.name} - Rp {item.price_per_kg.toLocaleString()} x {item.quantity} kg
+                {item.name} - Rp {item.price_per_kg.toLocaleString()} x{" "}
+                {item.quantity} kg
                 <div className="quantity-controls">
                   <button
                     className="button"
-                    onClick={() => onUpdateQuantity(item.id, Math.max(item.quantity - 1, 0))}
-                    disabled={item.quantity <= 0} // Disable jika sudah 0
+                    onClick={() =>
+                      onUpdateQuantity(item.id, Math.max(item.quantity - 1, 0))
+                    }
+                    disabled={item.quantity <= 0}
                   >
                     -
                   </button>
@@ -45,7 +63,12 @@ function Order({ cart, onUpdateQuantity, onCheckout }) {
                     value={item.quantity}
                     min="0"
                     max={item.stock_kg}
-                    onChange={(e) => handleQuantityChange(item.id, e.target.value, item.stock_kg)}
+                    onChange={(e) =>
+                      onUpdateQuantity(
+                        item.id,
+                        Math.min(Number(e.target.value), item.stock_kg)
+                      )
+                    }
                     style={{
                       width: "40px",
                       textAlign: "center",
@@ -54,8 +77,13 @@ function Order({ cart, onUpdateQuantity, onCheckout }) {
                   />
                   <button
                     className="button"
-                    onClick={() => onUpdateQuantity(item.id, Math.min(item.quantity + 1, item.stock_kg))}
-                    disabled={item.quantity >= item.stock_kg} // Disable jika sudah mencapai stok maksimum
+                    onClick={() =>
+                      onUpdateQuantity(
+                        item.id,
+                        Math.min(item.quantity + 1, item.stock_kg)
+                      )
+                    }
+                    disabled={item.quantity >= item.stock_kg}
                   >
                     +
                   </button>
@@ -65,14 +93,36 @@ function Order({ cart, onUpdateQuantity, onCheckout }) {
           ))
         )}
       </ul>
+
+      <div className="order-info">
+        <label>Alamat Pengirim (Toko):</label>
+        <input type="text" value={alamatPengirim} readOnly />
+
+        <label>Alamat Penerima (Anda):</label>
+        <input type="text" value={alamatPenerima} readOnly />
+      </div>
+
+      <div className="order-info">
+        <label>Jarak: </label>
+        <input type="text" value={routeInfo?.distance || "0 km"} readOnly />
+
+        <label>Waktu Tempuh: </label>
+        <input type="text" value={routeInfo?.duration || "0 menit"} readOnly />
+      </div>
+
       <div className="payment-method">
         <label htmlFor="paymentMethod">Metode Pembayaran:</label>
-        <select id="paymentMethod" value={paymentMethod} onChange={handlePaymentChange}>
+        <select
+          id="paymentMethod"
+          value={paymentMethod}
+          onChange={(e) => setPaymentMethod(e.target.value)}
+        >
           <option value="Bank Transfer">Bank Transfer</option>
           <option value="COD">Cash on Delivery (COD)</option>
         </select>
       </div>
-      <button className="checkout-button" onClick={() => onCheckout(paymentMethod)}>
+
+      <button className="checkout-button" onClick={() => onCheckout()}>
         Checkout
       </button>
     </div>

@@ -17,14 +17,59 @@ const attributions =
   '<a href="https://petapedia.github.io/" target="_blank">&copy; PetaPedia Indonesia</a>';
 const fallbackPlace = [107.57634352477324, -6.87436891415509];
 
-const MapComponent = ({ onSelectFarm }) => {
+const MapComponent = ({ onSelectFarm, onRouteUpdate }) => {
   const mapRef = useRef(null);
   const popupRef = useRef(null);
   const [mapInstance, setMapInstance] = useState(null);
   const [userCoordinates, setUserCoordinates] = useState(null);
   const [popupContent, setPopupContent] = useState({});
   const [endCoordinates, setEndCoordinates] = useState(null);
-  const [routeInfo, setRouteInfo] = useState({ distance: "0", duration: "" });
+  const [routeInfo, setRouteInfo] = useState({
+    distance: "0 km",
+    duration: "0 menit",
+  });
+
+  useEffect(() => {
+    if (onRouteUpdate) {
+      onRouteUpdate(routeInfo);
+    }
+  }, [routeInfo]);
+
+  const updateRoute = async (coordinates) => {
+    const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${userCoordinates[0]},${userCoordinates[1]};${coordinates[0]},${coordinates[1]}?overview=full&geometries=geojson`;
+
+    try {
+      const response = await fetch(osrmUrl);
+      const data = await response.json();
+
+      if (!data.routes || data.routes.length === 0) {
+        console.error("No route found.");
+        return;
+      }
+
+      const route = data.routes[0];
+      const distance = route.distance / 1000;
+      const durationInSeconds = route.duration;
+      const hours = Math.floor(durationInSeconds / 3600);
+      const minutes = Math.floor((durationInSeconds % 3600) / 60);
+      const seconds = Math.floor(durationInSeconds % 60);
+      const formattedDuration = `${hours} jam ${minutes} menit ${seconds} detik`;
+
+      setRouteInfo({
+        distance: `${distance.toFixed(2)} km`,
+        duration: formattedDuration,
+      });
+
+      if (onRouteUpdate) {
+        onRouteUpdate({
+          distance: `${distance.toFixed(2)} km`,
+          duration: formattedDuration,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching route:", error);
+    }
+  };
 
   const markerSource = new VectorSource();
 

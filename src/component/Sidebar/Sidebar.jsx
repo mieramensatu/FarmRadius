@@ -115,6 +115,22 @@ function Sidebar() {
                 <i className="ph ph-cardholder"></i>
                 <span>Payment</span>
               </Link>
+              <Link
+                to="/dashboard/pengirim"
+                data-menu="product"
+                className="menu-item"
+              >
+                <i class="ph ph-shipping-container"></i>
+                <span>Pengirim</span>
+              </Link>
+              <Link
+                to="/dashboard/pengiriman"
+                data-menu="product"
+                className="menu-item"
+              >
+                <i class="ph ph-package"></i>
+                <span>Pengiriman</span>
+              </Link>
             </>
           )}
           {role === "pembeli" && (
@@ -126,6 +142,26 @@ function Sidebar() {
               >
                 <i className="ph ph-storefront"></i>
                 <span>payment</span>
+              </Link>
+              <Link
+                to="/dashboard/pengiriman"
+                data-menu="product"
+                className="menu-item"
+              >
+                <i class="ph ph-package"></i>
+                <span>Pengiriman</span>
+              </Link>
+            </>
+          )}
+          {role === "pengirim" && (
+            <>
+              <Link
+                to="/dashboard/pengiriman"
+                data-menu="product"
+                className="menu-item"
+              >
+                <i class="ph ph-shipping-container"></i>
+                <span>Pengiriman Barang</span>
               </Link>
             </>
           )}

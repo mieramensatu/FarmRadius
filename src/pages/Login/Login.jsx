@@ -3,10 +3,11 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import Cookies from "js-cookie";
 import CryptoJS from "crypto-js"; // Import library CryptoJS
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
   axios.defaults.withCredentials = false;
+  const navigate = useNavigate(); // Gunakan useNavigate untuk redirect tanpa reload
 
   const [values, setValues] = useState({
     email: "",
@@ -25,7 +26,7 @@ function Login() {
 
       // Kirim data login ke server
       const response = await axios.post(
-        "https://farmdistribution-40a43a4491b1.herokuapp.com/login",
+        "https://farmsdistribution-2664aad5e284.herokuapp.com/login",
         values,
         {
           headers: {
@@ -36,20 +37,22 @@ function Login() {
 
       console.log("Server Response:", response.data);
 
-      const { message = "", token = null, user = null } = response.data;
+      const {
+        message = "",
+        token = null,
+        status = "",
+        role = "",
+      } = response.data;
 
-      if (user) {
-        if (token) {
-          // Simpan token ke Cookies
-          Cookies.set("login", token, { expires: 7 });
+      if (status === "success" && token) {
+        // Simpan token ke Cookies
+        Cookies.set("login", token, { expires: 7 });
 
-          // Enkripsi role sebelum menyimpan ke cookie
-          const encryptedRole = CryptoJS.AES.encrypt(
-            user.nama_role,
-            "your-secret-key"
-          ).toString();
-          Cookies.set("role", encryptedRole, { expires: 7 });
-        }
+        const encryptedRole = CryptoJS.AES.encrypt(
+          role,
+          "your-secret-key"
+        ).toString();
+        Cookies.set("role", encryptedRole, { expires: 7 });
 
         Swal.fire({
           icon: "success",
@@ -57,7 +60,12 @@ function Login() {
           text: message || "You have successfully logged in!",
           confirmButtonText: "OK",
         }).then(() => {
-          window.location.href = "/product"; // Redirect setelah login
+          // Redirect berdasarkan role
+          if (role === "Pengirim") {
+            navigate("/dashboard/pengiriman"); 
+          } else {
+            navigate("/product");
+          }
         });
       } else {
         Swal.fire({
