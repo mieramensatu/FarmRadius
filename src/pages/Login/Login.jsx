@@ -62,7 +62,7 @@ function Login() {
         }).then(() => {
           // Redirect berdasarkan role
           if (role === "Pengirim") {
-            navigate("/dashboard/pengiriman"); 
+            navigate("/dashboard/pengiriman-pengirim"); 
           } else {
             navigate("/product");
           }

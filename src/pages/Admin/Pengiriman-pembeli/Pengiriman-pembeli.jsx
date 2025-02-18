@@ -1,32 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Dashboard from "../Dashboard";
-import { DecodeRole } from "../../../helper/Decode";
 import Cookies from "js-cookie";
 import Swal from "sweetalert2";
-import "./_pengiriman.scss";
+import "./_pengirimanbeli.scss";
 
-function Pengiriman() {
+function PengirimanPembeli() {
   const [pengiriman, setPengiriman] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
   const token = Cookies.get("login");
-  const { getRole } = DecodeRole(); // Mengambil role yang sudah didecode
-  const [role, setRole] = useState("");
-
-  // Update role setelah didecode
-  useEffect(() => {
-    if (getRole) {
-      setRole(getRole);
-    }
-  }, [getRole]);
 
   useEffect(() => {
-    if (role) {
-      fetchProsesPengiriman();
-    }
-  }, [role]); // Fetch hanya jalan setelah role didecode
-  
+    fetchProsesPengiriman();
+  }, []);
 
   const fetchProsesPengiriman = async () => {
     try {
@@ -39,20 +24,7 @@ function Pengiriman() {
         return;
       }
 
-      let apiUrl =
-        "https://farmsdistribution-2664aad5e284.herokuapp.com/proses-pengiriman";
-
-      if (role.toLowerCase() === "penjual") {
-        apiUrl += "/peternak/";
-      } else if (role.toLowerCase() === "pengirim") {
-        apiUrl += "/pengirim/";
-      }
-
-      console.log("Fetching from:", apiUrl);
-      console.log("Token used:", token);
-      console.log("Role:", role);
-
-      const response = await fetch(apiUrl, {
+      const response = await fetch("https://farmsdistribution-2664aad5e284.herokuapp.com/proses-pengiriman", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -61,9 +33,7 @@ function Pengiriman() {
       });
 
       if (!response.ok) {
-        throw new Error(
-          `HTTP error! Status: ${response.status}, Message: ${response.statusText}`
-        );
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
       const data = await response.json();
@@ -73,13 +43,10 @@ function Pengiriman() {
 
       setPengiriman(data.data);
     } catch (error) {
-      console.error("Error fetching proses pengiriman:", error);
       Swal.fire({
         icon: "error",
         title: "Error",
-        text:
-          error.message ||
-          "Terjadi kesalahan saat mengambil data proses pengiriman!",
+        text: error.message || "Terjadi kesalahan saat mengambil data pengiriman!",
       });
     } finally {
       setLoading(false);
@@ -104,6 +71,7 @@ function Pengiriman() {
                 <th>Alamat Pengirim</th>
                 <th>Alamat Penerima</th>
                 <th>Status</th>
+                <th>Bukti Pengiriman</th>
               </tr>
             </thead>
             <tbody>
@@ -112,28 +80,33 @@ function Pengiriman() {
                   <tr key={item.id}>
                     <td>{index + 1}</td>
                     <td>{item.hari_dikirim || "Tidak tersedia"}</td>
-                    <td>{new Date(item.tanggal_dikirim).toLocaleString()}</td>
+                    <td>
+                      {item.tanggal_dikirim
+                        ? new Date(item.tanggal_dikirim).toLocaleString()
+                        : "Tidak tersedia"}
+                    </td>
                     <td>{item.alamat_pengirim || "Tidak tersedia"}</td>
                     <td>{item.alamat_penerima || "Tidak tersedia"}</td>
+                    <td>{item.status_pengiriman}</td>
                     <td>
-                      <span
-                        className={`status ${
-                          item.status_pengiriman === "Pending"
-                            ? "pending"
-                            : "completed"
-                        }`}
-                      >
-                        {item.status_pengiriman}
-                      </span>
+                      {item.image_pengiriman ? (
+                        <img
+                          src={item.image_pengiriman
+                            .replace("github.com", "raw.githubusercontent.com")
+                            .replace("/blob/", "/")}
+                          alt="Pengiriman"
+                          className="image-preview"
+                          style={{ width: "100px", height: "auto" }}
+                        />
+                      ) : (
+                        "Tidak tersedia"
+                      )}
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td
-                    colSpan="6"
-                    style={{ textAlign: "center", padding: "10px" }}
-                  >
+                  <td colSpan="6" style={{ textAlign: "center", padding: "10px" }}>
                     Tidak ada data pengiriman.
                   </td>
                 </tr>
@@ -146,4 +119,4 @@ function Pengiriman() {
   );
 }
 
-export default Pengiriman;
+export default PengirimanPembeli;

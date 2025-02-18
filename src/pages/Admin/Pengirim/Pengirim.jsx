@@ -177,6 +177,7 @@ function Pengirim() {
             <thead>
               <tr>
                 <th>#</th>
+                <th>Id_user</th>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Phone</th>
@@ -191,6 +192,7 @@ function Pengirim() {
                 users.map((user, index) => (
                   <tr key={user.id}>
                     <td>{index + 1}</td>
+                    <td>{user.id || "Nama Tidak Tersedia"}</td>
                     <td>{user.name || user.nama || "Nama Tidak Tersedia"}</td>
                     <td>{user.email || "Email Tidak Tersedia"}</td>
                     <td>{user.phone || "Telepon Tidak Tersedia"}</td>

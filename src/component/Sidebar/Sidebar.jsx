@@ -124,7 +124,7 @@ function Sidebar() {
                 <span>Pengirim</span>
               </Link>
               <Link
-                to="/dashboard/pengiriman"
+                to="/dashboard/pengiriman-penjual"
                 data-menu="product"
                 className="menu-item"
               >
@@ -144,7 +144,7 @@ function Sidebar() {
                 <span>payment</span>
               </Link>
               <Link
-                to="/dashboard/pengiriman"
+                to="/dashboard/pengiriman-pembeli"
                 data-menu="product"
                 className="menu-item"
               >

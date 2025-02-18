@@ -23,7 +23,9 @@ import VerifyPeternakRequests from "./pages/Admin/VerifikasiAkun/Verifikasi";
 import Pesanan from "./pages/Admin/Pesanan/pesanan";
 import Payment from "./pages/Admin/Payment/Payment";
 import Pengirim from "./pages/Admin/Pengirim/Pengirim";
-import Pengiriman from "./pages/Admin/Pengiriman/Pengiriman";
+import PengirimanPembeli from "./pages/Admin/Pengiriman-pembeli/Pengiriman-pembeli";
+import PengirimanPengirim from "./pages/Admin/Pengiriman-pengirim/Pengiriman-pengirim";
+import PengirimanPenjual from "./pages/Admin/Pengiriman-penjual/Pengiriman-penjual";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -52,7 +54,9 @@ createRoot(document.getElementById("root")).render(
         <Route path="/dashboard/pesanan" element={<Pesanan />} />
         <Route path="/dashboard/payment" element={<Payment />} />
         <Route path="/dashboard/pengirim" element={<Pengirim />} />
-        <Route path="/dashboard/pengiriman" element={<Pengiriman />} />
+        <Route path="/dashboard/pengiriman-pengirim" element={<PengirimanPengirim />} />
+        <Route path="/dashboard/pengiriman-pembeli" element={<PengirimanPembeli />} />
+        <Route path="/dashboard/pengiriman-penjual" element={<PengirimanPenjual />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

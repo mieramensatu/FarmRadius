@@ -39,15 +39,19 @@
       border-radius: 5px;
       font-size: 14px;
       font-weight: bold;
+    }
 
-      &.pending {
-        background: #f1c40f;
-        color: #fff;
-      }
+    .update-btn {
+      padding: 5px 10px;
+      background: #3498db;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: 0.3s;
 
-      &.completed {
-        background: #2ecc71;
-        color: #fff;
+      &:hover {
+        background: #2980b9;
       }
     }
   }
