@@ -29,7 +29,7 @@ function PengirimanPenjual() {
       }
 
       const apiUrl =
-        "https://farmsdistribution-2664aad5e284.herokuapp.com/proses-pengiriman/peternak/";
+        "https://farm-distribution-d0d1df93c0f1.herokuapp.com/proses-pengiriman/peternak/";
 
       const response = await fetch(apiUrl, {
         method: "GET",
@@ -65,7 +65,7 @@ function PengirimanPenjual() {
     try {
       console.log("Mengambil daftar pengirim...");
       const response = await fetch(
-        "https://farmsdistribution-2664aad5e284.herokuapp.com/pengirim",
+        "https://farm-distribution-d0d1df93c0f1.herokuapp.com/pengirim",
         {
           method: "GET",
           headers: {
@@ -140,7 +140,7 @@ function PengirimanPenjual() {
       }
 
       const response = await fetch(
-        `https://farmsdistribution-2664aad5e284.herokuapp.com/proses-pengiriman/edit/${id}`,
+        `https://farm-distribution-d0d1df93c0f1.herokuapp.com/proses-pengiriman/edit/${id}`,
         {
           method: "PUT",
           headers: {

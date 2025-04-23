@@ -16,7 +16,7 @@ function VerifyPeternakRequests() {
         }
 
         const response = await fetch(
-          "https://farmsdistribution-2664aad5e284.herokuapp.com/get/req/peternak",
+          "https://farm-distribution-d0d1df93c0f1.herokuapp.com/get/req/peternak",
           {
             method: "GET",
             headers: {
@@ -55,7 +55,7 @@ function VerifyPeternakRequests() {
       }
 
       const response = await fetch(
-        "https://farmsdistribution-2664aad5e284.herokuapp.com/update/req/peternak",
+        "https://farm-distribution-d0d1df93c0f1.herokuapp.com/update/req/peternak",
         {
           method: "PUT",
           headers: {
@@ -97,7 +97,7 @@ function VerifyPeternakRequests() {
       }
 
       const response = await fetch(
-        `https://farmsdistribution-2664aad5e284.herokuapp.com/delete/req/peternak?_id=${requestId}`,
+        `https://farm-distribution-d0d1df93c0f1.herokuapp.com/delete/req/peternak?_id=${requestId}`,
         {
           method: "DELETE",
           headers: {

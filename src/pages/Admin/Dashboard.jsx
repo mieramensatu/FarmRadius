@@ -35,7 +35,7 @@ function Dashboard({ children }) {
         }
 
         const response = await fetch(
-          "https://farmsdistribution-2664aad5e284.herokuapp.com/peternakan/get",
+          "https://farm-distribution-d0d1df93c0f1.herokuapp.com/peternakan/get",
           {
             method: "GET",
             headers: {

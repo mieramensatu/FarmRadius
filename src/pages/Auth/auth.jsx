@@ -154,7 +154,7 @@ function RegisterSeller() {
 
     try {
       const response = await axios.post(
-        "https://farmsdistribution-2664aad5e284.herokuapp.com/peternakan",
+        "https://farm-distribution-d0d1df93c0f1.herokuapp.com/peternakan",
         formData,
         {
           headers: {

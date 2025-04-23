@@ -26,7 +26,7 @@ function Login() {
 
       // Kirim data login ke server
       const response = await axios.post(
-        "https://farmsdistribution-2664aad5e284.herokuapp.com/login",
+        "https://farm-distribution-d0d1df93c0f1.herokuapp.com/login",
         values,
         {
           headers: {

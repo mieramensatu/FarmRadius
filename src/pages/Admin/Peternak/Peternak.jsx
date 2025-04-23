@@ -17,7 +17,7 @@ function Toko() {
     const fetchFarms = async () => {
       try {
         const response = await fetch(
-          "https://farmsdistribution-2664aad5e284.herokuapp.com/all/peternak",
+          "https://farm-distribution-d0d1df93c0f1.herokuapp.com/all/peternak",
           {
             method: "GET",
             headers: {
@@ -60,7 +60,7 @@ function Toko() {
         try {
           console.log("Attempting to delete farm with farm_id:", farm_id);
           const response = await fetch(
-            `https://farmsdistribution-2664aad5e284.herokuapp.com/peternakan/delete?id=${farm_id}`,
+            `https://farm-distribution-d0d1df93c0f1.herokuapp.com/peternakan/delete?id=${farm_id}`,
             {
               method: "DELETE",
               headers: {

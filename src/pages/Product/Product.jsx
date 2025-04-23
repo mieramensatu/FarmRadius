@@ -192,7 +192,7 @@ function Product() {
 
     try {
       const response = await fetch(
-        "https://farmsdistribution-2664aad5e284.herokuapp.com/order",
+        "https://farm-distribution-d0d1df93c0f1.herokuapp.com/order",
         {
           method: "POST",
           headers: {
@@ -234,7 +234,7 @@ function Product() {
       setSelectedFarmId(farmId);
 
       const response = await fetch(
-        `https://farmsdistribution-2664aad5e284.herokuapp.com/product/farm?id_farm=${farmId}`
+        `https://farm-distribution-d0d1df93c0f1.herokuapp.com/product/farm?id_farm=${farmId}`
       );
 
       if (!response.ok) {

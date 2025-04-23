@@ -121,7 +121,7 @@ const MapComponent = ({ onSelectFarm, onRouteUpdate }) => {
         const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
         const response = await fetch(
-          "https://farmsdistribution-2664aad5e284.herokuapp.com/all/peternak",
+          "https://farm-distribution-d0d1df93c0f1.herokuapp.com/all/peternak",
           {
             headers,
           }

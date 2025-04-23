@@ -26,7 +26,7 @@ function RequestPeternak() {
 
     try {
       const response = await fetch(
-        "https://farmsdistribution-2664aad5e284.herokuapp.com/req/peternak",
+        "https://farm-distribution-d0d1df93c0f1.herokuapp.com/req/peternak",
         {
           method: "POST",
           headers: {

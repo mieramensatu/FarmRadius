@@ -38,7 +38,7 @@ function Resetpassword() {
 
     try {
       const response = await fetch(
-        "https://farmsdistribution-2664aad5e284.herokuapp.com/reset-password",
+        "https://farm-distribution-d0d1df93c0f1.herokuapp.com/reset-password",
         {
           method: "POST",
           headers: {

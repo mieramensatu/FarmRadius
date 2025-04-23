@@ -47,7 +47,7 @@ function Pengirim() {
     if (formValues) {
       try {
         const response = await fetch(
-          "https://farmsdistribution-2664aad5e284.herokuapp.com/add/pengirim",
+          "https://farm-distribution-d0d1df93c0f1.herokuapp.com/add/pengirim",
           {
             method: "POST",
             headers: {
@@ -116,7 +116,7 @@ function Pengirim() {
       }
 
       const response = await fetch(
-        "https://farmsdistribution-2664aad5e284.herokuapp.com/pengirim",
+        "https://farm-distribution-d0d1df93c0f1.herokuapp.com/pengirim",
         {
           method: "GET",
           headers: {

@@ -15,7 +15,7 @@ function Productsection({ onAddToCart, cart = [], selectedFarmId }) {
         console.log("🔍 Fetching all products...");
 
         const response = await fetch(
-          `https://farmsdistribution-2664aad5e284.herokuapp.com/product`,
+          `https://farm-distribution-d0d1df93c0f1.herokuapp.com/product`,
           {
             method: "GET",
             headers: {

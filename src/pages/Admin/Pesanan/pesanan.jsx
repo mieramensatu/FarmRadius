@@ -15,7 +15,7 @@ function Pesanan() {
     const fetchOrders = async () => {
       try {
         const response = await fetch(
-          "https://farmsdistribution-2664aad5e284.herokuapp.com/all/order",
+          "https://farm-distribution-d0d1df93c0f1.herokuapp.com/all/order",
           {
             method: "GET",
             headers: {
@@ -69,7 +69,7 @@ function Pesanan() {
 
     try {
       const response = await fetch(
-        "https://farmsdistribution-2664aad5e284.herokuapp.com/order/update",
+        "https://farm-distribution-d0d1df93c0f1.herokuapp.com/order/update",
         {
           method: "PUT",
           headers: {
@@ -126,7 +126,7 @@ function Pesanan() {
 
     try {
       const response = await fetch(
-        "https://farmsdistribution-2664aad5e284.herokuapp.com/order/delete",
+        "https://farm-distribution-d0d1df93c0f1.herokuapp.com/order/delete",
         {
           method: "DELETE",
           headers: {

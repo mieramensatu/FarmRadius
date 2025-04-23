@@ -24,7 +24,7 @@ function PengirimanPembeli() {
         return;
       }
 
-      const response = await fetch("https://farmsdistribution-2664aad5e284.herokuapp.com/proses-pengiriman", {
+      const response = await fetch("https://farm-distribution-d0d1df93c0f1.herokuapp.com/proses-pengiriman", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

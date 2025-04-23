@@ -25,7 +25,7 @@ function PengirimanPengirim() {
       }
 
       const apiUrl =
-        "https://farmsdistribution-2664aad5e284.herokuapp.com/proses-pengiriman/pengirim/";
+        "https://farm-distribution-d0d1df93c0f1.herokuapp.com/proses-pengiriman/pengirim/";
       const response = await fetch(apiUrl, {
         method: "GET",
         headers: {
@@ -118,7 +118,7 @@ function PengirimanPengirim() {
         console.log(`${pair[0]}: ${pair[1]}`);
       }
 
-      const updateUrl = `https://farmsdistribution-2664aad5e284.herokuapp.com/proses-pengiriman/edit/${id}`;
+      const updateUrl = `https://farm-distribution-d0d1df93c0f1.herokuapp.com/proses-pengiriman/edit/${id}`;
       console.log("[DEBUG] Mengirim permintaan PUT ke:", updateUrl);
 
       const response = await fetch(updateUrl, {

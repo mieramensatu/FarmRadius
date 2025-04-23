@@ -13,7 +13,7 @@ function Payment() {
     const fetchOrders = async () => {
       try {
         const response = await fetch(
-          "https://farmsdistribution-2664aad5e284.herokuapp.com/order/user",
+          "https://farm-distribution-d0d1df93c0f1.herokuapp.com/order/user",
           {
             method: "GET",
             headers: {
@@ -95,7 +95,7 @@ function Payment() {
         formData.append("bukti_transfer", file);
 
         return fetch(
-          `https://farmsdistribution-2664aad5e284.herokuapp.com/order/bukti-transfer?id_invoice=${invoiceId}`,
+          `https://farm-distribution-d0d1df93c0f1.herokuapp.com/order/bukti-transfer?id_invoice=${invoiceId}`,
           {
             method: "PUT",
             headers: {
