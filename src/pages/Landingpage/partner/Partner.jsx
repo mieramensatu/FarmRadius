@@ -39,7 +39,7 @@ function Partner() {
             alt="eFishery"
           />
           <img
-            src="https://cdn1.iconfinder.com/data/icons/logos-brands-in-colors/7500/Netflix_Logo_RGB-1024.png"
+            src="https://wp.logos-download.com/wp-content/uploads/2016/03/Netflix_Logo_2014-700x188.png"
             alt="Netflix"
           />
           <img

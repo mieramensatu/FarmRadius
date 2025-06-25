@@ -1,4 +1,9 @@
 import React from "react";
+import peternakan from "./../../../assets/thomas-iversen-4W8FgDVyUME-unsplash.jpg";
+import agritech from "./../../../assets/agritech-srl-logo-vector-removebg-preview.png";
+import farm from "./../../../assets/Irish_Farmers'_Association_logo.png";
+import logistics from "./../../../assets/logo-design-for-delivery-logistics-and-others-logo-collection-concept-design-symbol-icon-free-vector-removebg-preview.png";
+import marketplace from "./../../../assets/marketplace-logo_1438-512_prev_ui.png";
 
 function Tim() {
   return (
@@ -6,10 +11,7 @@ function Tim() {
       <div className="partners-section">
         <div className="image-side">
           <div className="image-placeholder">
-            <img
-              src="src/assets/logo/pexels-diego-auquilla-530112625-29418866.jpg"
-              alt="Peternakan Ayam"
-            />
+            <img src={peternakan} alt="Peternakan Ayam" />
           </div>
         </div>
         <div className="content-side">
@@ -21,31 +23,19 @@ function Tim() {
           </p>
           <div className="partners-logos">
             <div className="logo">
-              <img
-                src="src/assets/logo/tim/farm-association.png"
-                alt="Farm Association Logo"
-              />
+              <img src={farm} alt="Farm Association Logo" />
               <p>Farm Association</p>
             </div>
             <div className="logo">
-              <img
-                src="src/assets/logo/tim/agriculture-tech.png"
-                alt="AgriTech Logo"
-              />
+              <img src={agritech} alt="AgriTech Logo" />
               <p>AgriTech</p>
             </div>
             <div className="logo">
-              <img
-                src="src/assets/logo/tim/delivery-partner.png"
-                alt="Logistics Logo"
-              />
+              <img src={logistics} alt="Logistics Logo" />
               <p>Logistics</p>
             </div>
             <div className="logo">
-              <img
-                src="src/assets/logo/tim/marketplace-logo.png"
-                alt="Marketplace Logo"
-              />
+              <img src={marketplace} alt="Marketplace Logo" />
               <p>Marketplace</p>
             </div>
           </div>
